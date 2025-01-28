@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import './App.css'
+import Search from './Search'
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -14,6 +16,7 @@ function App() {
 
   return (
     <>
+      <Search />
       <h1>CODE CRUSADERS!</h1>
       <div>
         <h2>ROLES</h2>
