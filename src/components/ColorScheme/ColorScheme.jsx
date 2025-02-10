@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function App() {
+function ColorScheme() {
   const [buttonColor, setButtonColor] = useState('#6cc14f'); // Color for the buttons
   const [iconColor, setIconColor] = useState('#6cc14f'); // Color for the website Icons
 
@@ -16,4 +16,4 @@ function App() {
   );
 }
 
-export default App;
+export default ColorScheme;

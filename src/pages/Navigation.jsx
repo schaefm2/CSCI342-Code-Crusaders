@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import { MaterialSymbolsTravelExplore } from "../assets/material-symbols_travel-explore.svg";
+import MaterialSymbolsTravelExplore from "../assets/material-symbols_travel-explore.svg";
 
 const Navigation = () => {
   return (
