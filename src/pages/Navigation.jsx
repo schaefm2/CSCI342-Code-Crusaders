@@ -1,26 +1,27 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
+import { MaterialSymbolsTravelExplore } from "../assets/material-symbols_travel-explore.svg";
 
 const Navigation = () => {
   return (
-    <nav>
-      <ul>
-        <li>
+    <nav className=" w-[1404px] h-[50px]">
+      <div className="inline-flex items-center gap-10 absolute top-[18px] left-[545px] ">
+        <div className="flex space-x-10">
           <NavLink to="/">Home</NavLink>
-        </li>
-        <li>
+        </div>
+        <div>
           <NavLink to="/hotels">Hotels</NavLink>
-        </li>
-        <li>
+        </div>
+        <div>
           <NavLink to="/flights">Flights</NavLink>
-        </li>
-        <li>
+        </div>
+        <div>
           <NavLink to="/rentals">Rentals</NavLink>
-        </li>
-        <li>
+        </div>
+        <div>
           <NavLink to="/trips">Trips</NavLink>
-        </li>
-      </ul>
+        </div>
+      </div>
     </nav>
   );
 };

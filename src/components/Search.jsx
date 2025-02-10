@@ -27,7 +27,7 @@ const Search = () => {
       <GeoapifyContext apiKey="e96aed6945a84bcbb46d19d02f54e66c">
         <div>
           <GeoapifyGeocoderAutocomplete
-            placeholder="Enter address here"
+            placeholder="Enter a location or address"
             type="city"
             value={query}
           />

@@ -12,9 +12,11 @@
   "dependencies": {
     "@geoapify/geocoder-autocomplete": "^2.1.0",
     "@geoapify/react-geocoder-autocomplete": "^2.0.1",
+    "@tailwindcss/vite": "^4.0.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^7.1.5"
+    "react-router-dom": "^7.1.5",
+    "tailwindcss": "^4.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

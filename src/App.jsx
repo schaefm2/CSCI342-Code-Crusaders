@@ -9,7 +9,7 @@ import Navigation from "./pages/Navigation";
 import NotFoundPage from "./pages/NotFoundPage";
 function App() {
   return (
-    <>
+    <div>
       <Navigation />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -19,7 +19,7 @@ function App() {
         <Route path="/trips" element={<TripsPage />} />
         <Route path="*" element={<NotFoundPage />}></Route>
       </Routes>
-    </>
+    </div>
   );
 }
 
