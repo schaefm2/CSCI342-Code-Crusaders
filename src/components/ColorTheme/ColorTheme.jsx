@@ -3,8 +3,13 @@ import React, { createContext, useContext, useState } from 'react';
 const themeConstant = createContext();
 
 export const colorTheme = {
-  buttonColor: '#6cc14f',
+  blackButtonColor: '#2754b5', // the black on the login & logout button on Figma
+  blueButtonColor: '#2754b5', // blue button on the alternative login & logout buttons
   iconColor: '#6cc14f',
+  reviewColor: '#fef6eb',  // background color of 'top flight reviews' from figma
+
+  // big fan of it unsure what we're using it for but we can change name
+  passiveGreen: '#b7d2ad'  // green color originally on Figma
 }
 
 export const userColorTheme = () => useContext(themeConstant);
@@ -32,7 +37,7 @@ export const ColorScheme= () => {
 
         {/* TODO: Add more colon themes here for different future components */}
 
-      <button style={{ backgroundColor: buttonColor }} className="button-class">
+      <button style={{ color: blackButtonColor }} className="button-class">
         Button
       </button>
 
