@@ -14,6 +14,7 @@ export const colorTheme = {
 
 export const userColorTheme = () => useContext(themeConstant);
 
+// exported provider so it can wrap all of main app, and be accessible anywhere needed in the project
 export const ColorThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(colorTheme);  // add colors to this constant for more website colors
 
