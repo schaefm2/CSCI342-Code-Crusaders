@@ -1,33 +1,26 @@
-import { useState } from 'react'
-import './App.css'
-import Search from './Search'
-
-
+import "./App.css";
+import { Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import HotelsPage from "./pages/HotelsPage";
+import FlightsPage from "./pages/FlightsPage";
+import RentalsPage from "./pages/RentalsPage";
+import TripsPage from "./pages/TripsPage";
+import Navigation from "./pages/Navigation";
+import NotFoundPage from "./pages/NotFoundPage";
 function App() {
-  const [count, setCount] = useState(0)
-
-  const roles = [
-    "Lead Front End: Max",
-    "Back End: Aidan and Elijah",
-    "UI/UX: Henry",
-    "Database Management: Andrew",
-    "Project Management: Everyone"
-  ]
-
   return (
     <>
-      <Search />
-      <h1>CODE CRUSADERS!</h1>
-      <div>
-        <h2>ROLES</h2>
-        {
-          roles.map((role, index) => (
-            <p key={index}>{role}</p>
-          ))
-        }
-      </div>
+      <Navigation />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/hotels" element={<HotelsPage />} />
+        <Route path="/flights" element={<FlightsPage />} />
+        <Route path="/rentals" element={<RentalsPage />} />
+        <Route path="/trips" element={<TripsPage />} />
+        <Route path="*" element={<NotFoundPage />}></Route>
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
