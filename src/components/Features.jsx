@@ -1,7 +1,6 @@
 import React from "react";
-import Featuers from "../components/Features";
 
-const HomePage = () => {
+const Features = () => {
   return (
     <div className="w-[1440px] h-[900px] relative bg-[#cbdafa]  overflow-hidden">
       <div data-svg-wrapper className="left-0 top-0 absolute">
@@ -379,4 +378,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Features;

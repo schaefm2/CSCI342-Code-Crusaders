@@ -1,14 +1,13 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import MaterialSymbolsTravelExplore from "../assets/material-symbols_travel-explore.svg";
-import "./NavStyle.css";
 
 const textWrapper =
   "relative w-fit mt-[-1.00px] [font-family:'Montserrat-Medium',Helvetica] font-medium text-black text-base tracking-[0] leading-4 whitespace-nowrap";
 
 const Navigation = () => {
   return (
-    <nav className=" w-[1404px] h-[50px]">
+    <nav className="w-[1404px] h-[50px]">
       <div className="inline-flex items-center gap-10 absolute top-[18px] left-[498px]">
         <NavLink to="/">
           <div className={textWrapper}> Home</div>
@@ -26,6 +25,11 @@ const Navigation = () => {
         <NavLink to="/trips">
           <div className={textWrapper}>Trips</div>
         </NavLink>
+      </div>
+      <div className="inline-flex items-center gap-2 absolute top-[18px] right-[20px]">
+        <button className="bg-black text-white px-4 py-2 rounded">
+          Log In
+        </button>
       </div>
       <div className="inline-flex items-center gap-1.5 absolute top-0 left-0">
         <img
