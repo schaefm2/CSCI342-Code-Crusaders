@@ -1,10 +1,12 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const themeConstant = createContext();
 
 export const colorTheme = {
   blackButtonColor: '#2754b5', // the black on the login & logout button on Figma
   blueButtonColor: '#2754b5', // blue button on the alternative login & logout buttons
+  blueButtonHoverColor: '#2754A5', // color to use for when button is hovered over (darker blue)
+  
   iconColor: '#6cc14f',
   reviewColor: '#fef6eb',  // background color of 'top flight reviews' from figma
 
@@ -21,6 +23,18 @@ export const ColorThemeProvider = ({ children }) => {
 
   // add more color theming here for different website elements
 
+  // Allows use in all css files since attached to the root of the project, AWESOME!
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--blueButtonColor', theme.blueButtonColor);
+    root.style.setProperty('--blueButtonHoverColor', theme.blueButtonHoverColor);
+    root.style.setProperty('--iconColor', theme.iconColor);
+    root.style.setProperty('--reviewColor', theme.reviewColor);
+    root.style.setProperty('--passiveGreen', theme.passiveGreen);
+
+    console.log("Updated button color:", theme.blueButtonColor);
+
+  }, [theme]);
 
   return (
     <themeConstant.Provider value={{theme, setTheme}}>

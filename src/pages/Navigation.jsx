@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import MaterialSymbolsTravelExplore from "../assets/material-symbols_travel-explore.svg";
+import "./NavStyle.css";
 
 const textWrapper =
   "relative w-fit mt-[-1.00px] [font-family:'Montserrat-Medium',Helvetica] font-medium text-black text-base tracking-[0] leading-4 whitespace-nowrap";
