@@ -14,15 +14,15 @@ import React, { useEffect, useState } from 'react';
 
     //     const storedLocalToken = localStorage.getItem('accessToken');
 
-    //     if (storedLocalToken) { // if one exists return the existing token
-    //         setAccessToken(storedLocalToken)
-    //         return;
-    //     }
+        // if (storedLocalToken) { // if one exists return the existing token
+        //     setAccessToken(storedLocalToken)
+        //     return;
+        // }
         
 
         const fetchAccessToken = async (fetchedToken) => {
 
-            console.log("Start if fetchAccessToken");
+            console.log("Start of fetchAccessToken");
 
             try {
 
@@ -30,6 +30,7 @@ import React, { useEffect, useState } from 'react';
 
                 // If token is already in localStorage, call the fetchedToken callback and return
                 if (storedLocalToken) { 
+                    console.log("Found stored token inside fetchAccessToken, returning...");
                     fetchedToken(storedLocalToken);
                     return;
                 }
@@ -62,7 +63,7 @@ import React, { useEffect, useState } from 'react';
 
                 // Set the token in localStorage here too
                 localStorage.setItem('accessToken', token);
-                setAccessToken(token);
+                // setAccessToken(token);
 
                 // is this needed???
                 if (fetchedToken) {
@@ -72,7 +73,7 @@ import React, { useEffect, useState } from 'react';
                 console.log("Unique User Access Token: ", data.access_token);
 
             } catch(e) {
-                setError(`Error: ${err.message}`); // adds error to useState holding error for later
+                // setError(`Error: ${err.message}`); // adds error to useState holding error for later
                 console.log(e);
             }
         };

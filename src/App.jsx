@@ -19,22 +19,19 @@ function App() {
   const [themeState, setThemeState] = useState(colorTheme);
   const [accessToken, setAccessToken] = useState(null);
 
-  // Checks if token already exists in localStorage
-  useEffect(() => {
-    const storedToken = localStorage.getItem('accessToken');
-    if (storedToken) {
-      console.log("Stored token found: ", storedToken);
-      setAccessToken(storedToken); // Use stored token if available
-    } else {
-      console.log("Fetching token...");
-      fetchAccessToken(setAccessToken);
-    }
-  }, []);
+  // Uncomment below if need to use access tokens
 
-  // const getAccesstoken = (token) => {
-  //   setAccessToken(token);
-  //   // localStorage.setItem('accesstoken', token); // localStorage stores uniquely generated token for each instance of opening site
-  // }
+  // Checks and generates access tokens
+  // useEffect(() => {
+  //   const storedToken = localStorage.getItem('accessToken');
+  //   if (storedToken) {
+  //     console.log("Stored token found: ", storedToken);
+  //     setAccessToken(storedToken); // Use stored token if available
+  //   } else {
+  //     console.log("Fetching token...");
+  //     fetchAccessToken(setAccessToken);
+  //   }
+  // }, []);
 
   const renderFlightDataOrLoading = () => {
 
