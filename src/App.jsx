@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import HotelsPage from "./pages/HotelsPage";
@@ -10,14 +10,50 @@ import Navigation from "./pages/Navigation";
 import NotFoundPage from "./pages/NotFoundPage";
 
 import { ColorThemeProvider, colorTheme } from './components/ColorTheme/ColorTheme.jsx';
+import AmadeusAPITokenCreation from "./components/FlightData/AmadeusAPITokenCreation.jsx";
+import FlightData from "./components/FlightData/FlightData.jsx";
 
 function App() {
 
   const [themeState, setThemeState] = useState(colorTheme);
+  const [accessToken, setAccessToken] = useState(null);
+
+  // Checks if token already exists in localStorage
+  useEffect(() => {
+    const storedToken = localStorage.getItem('accessToken');
+    if (storedToken) {
+      setAccessToken(storedToken); // Use stored token if available
+    }
+  }, [accessToken]);
+
+  const getAccesstoken = (token) => {
+    setAccessToken(token);
+    localStorage.setItem('accesstoken', token); // localStorage stores uniquely generated token for each instance of opening site
+  }
+
+  const renderFlightDataOrLoading = () => {
+
+    if (accessToken) {
+      return <FlightData accessToken={accessToken} />;
+    } else {
+      return <div className="loading-message">Fetching API token, please wait...</div>;
+    }
+
+  };
 
   return (
     <ColorThemeProvider>
       <div>
+
+        {/* <h1>Flight Data</h1>
+        {renderFlightDataOrLoading()} */}
+
+        {/* WARNING WARNING WARNING!!! DONT UNCOMMENT BELOW */}
+        {/* Currently Generates 2 tokens and i've probably already used 500 debugging giving up for now */}
+
+        {/* If accessToken hasn't been acquired yet, then make token */}
+        {/* {!accessToken && <AmadeusAPITokenCreation fetchedToken={getAccesstoken} />} */}
+
         <Navigation />
         <Routes>
           <Route path="/" element={<HomePage />} />
