@@ -2,27 +2,37 @@ import React, { useEffect, useState } from 'react';
 
 // Amadeus API key: ...
 
-const AmadeusAPITokenCreation = ({ fetchedToken }) => {
+// const AmadeusAPITokenCreation = ({ fetchedToken }) => {
   
-    const [accessToken, setAccessToken] = useState(null);
-    const [error, setError] = useState(null);
+    // const [accessToken, setAccessToken] = useState(null);
+    // const [error, setError] = useState(null);
 
     const clientID = 'NkMFkZLtqmt4Mls7Qtmgc8JpPtzsu8Yp';
     const clientSecret = 'Dn3qINbKSQnwTt6x';
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const storedLocalToken = localStorage.getItem('accessToken');
+    //     const storedLocalToken = localStorage.getItem('accessToken');
 
-        if (storedLocalToken) { // if one exists return the existing token
-            // fetchedToken(storedLocalToken);
-            return;
-        }
+    //     if (storedLocalToken) { // if one exists return the existing token
+    //         setAccessToken(storedLocalToken)
+    //         return;
+    //     }
         
 
-        const fetchAccessToken = async () => {
+        const fetchAccessToken = async (fetchedToken) => {
+
+            console.log("Start if fetchAccessToken");
 
             try {
+
+                const storedLocalToken = localStorage.getItem('accessToken');
+
+                // If token is already in localStorage, call the fetchedToken callback and return
+                if (storedLocalToken) { 
+                    fetchedToken(storedLocalToken);
+                    return;
+                }
 
                 const response = await fetch('https://test.api.amadeus.com/v1/security/oauth2/token', {
                     
@@ -48,8 +58,16 @@ const AmadeusAPITokenCreation = ({ fetchedToken }) => {
                 // fetchedToken(token);
 
                 const data = await response.json();
-                setAccessToken(data.access_token);
-                fetchedToken(data.access_token);
+                const token = data.access_token;
+
+                // Set the token in localStorage here too
+                localStorage.setItem('accessToken', token);
+                setAccessToken(token);
+
+                // is this needed???
+                if (fetchedToken) {
+                    fetchedToken(token);
+                }
 
                 console.log("Unique User Access Token: ", data.access_token);
 
@@ -59,22 +77,23 @@ const AmadeusAPITokenCreation = ({ fetchedToken }) => {
             }
         };
 
-        fetchAccessToken();
-    }, []); // NEED EMPTY DEPENDENCIES otherwise multiple tokens generate
+        // fetchAccessToken();
+    // }, []); // NEED EMPTY DEPENDENCIES otherwise multiple tokens generate
 
-    // if error got set send error
-    if (error) {
-        return <div>{error}</div>;
-    }
+    // // if error got set send error
+    // if (error) {
+    //     return <div>{error}</div>;
+    // }
     
-    // if token isnt set yet keep loading
-    if (!accessToken) {
-        return <div>Loading...</div>;
-    }
+    // // if token isnt set yet keep loading
+    // if (!accessToken) {
+    //     return <div>Loading...</div>;
+    // }
 
-    // return the string containing the accessToken
-    return <div>{accessToken}</div>
+    // // return the string containing the accessToken
+    // return <div>{accessToken}</div>
         
-}
+// }
 
-export default AmadeusAPITokenCreation;
+// export default AmadeusAPITokenCreation;
+export default fetchAccessToken;

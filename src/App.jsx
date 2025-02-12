@@ -10,8 +10,9 @@ import Navigation from "./pages/Navigation";
 import NotFoundPage from "./pages/NotFoundPage";
 
 import { ColorThemeProvider, colorTheme } from './components/ColorTheme/ColorTheme.jsx';
-import AmadeusAPITokenCreation from "./components/FlightData/AmadeusAPITokenCreation.jsx";
+// import AmadeusAPITokenCreation from "./components/FlightData/AmadeusAPITokenCreation.jsx";
 import FlightData from "./components/FlightData/FlightData.jsx";
+import fetchAccessToken from "./components/FlightData/AmadeusAPITokenCreation.jsx";
 
 function App() {
 
@@ -22,14 +23,18 @@ function App() {
   useEffect(() => {
     const storedToken = localStorage.getItem('accessToken');
     if (storedToken) {
+      console.log("Stored token found: ", storedToken);
       setAccessToken(storedToken); // Use stored token if available
+    } else {
+      console.log("Fetching token...");
+      fetchAccessToken(setAccessToken);
     }
-  }, [accessToken]);
+  }, []);
 
-  const getAccesstoken = (token) => {
-    setAccessToken(token);
-    localStorage.setItem('accesstoken', token); // localStorage stores uniquely generated token for each instance of opening site
-  }
+  // const getAccesstoken = (token) => {
+  //   setAccessToken(token);
+  //   // localStorage.setItem('accesstoken', token); // localStorage stores uniquely generated token for each instance of opening site
+  // }
 
   const renderFlightDataOrLoading = () => {
 
