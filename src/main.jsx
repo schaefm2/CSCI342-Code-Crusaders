@@ -3,11 +3,29 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
+import HomePage from "./pages/HomePage.jsx";
+import HotelsPage from "./pages/HotelsPage.jsx";
+import FlightsPage from "./pages/FlightsPage.jsx";
+import RentalsPage from "./pages/RentalsPage.jsx";
+import TripsPage from "./pages/TripsPage.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
+import LoginForm from "./components/Forms/LoginForm.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <Routes>
+        <Route path="/" element={<App />}>
+          <Route path="" element={<HomePage />} />
+          <Route path="hotels" element={<HotelsPage />} />
+          <Route path="flights" element={<FlightsPage />} />
+          <Route path="rentals" element={<RentalsPage />} />
+          <Route path="trips" element={<TripsPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+          <Route path="login" element={<LoginForm />} />
+        </Route>
+      </Routes>
     </BrowserRouter>
   </StrictMode>
 );
