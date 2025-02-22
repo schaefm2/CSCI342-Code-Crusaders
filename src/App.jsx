@@ -1,6 +1,5 @@
 import "./App.css";
 import React, { useState } from "react";
-import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import HotelsPage from "./pages/HotelsPage";
@@ -10,10 +9,6 @@ import TripsPage from "./pages/TripsPage";
 import Navigation from "./pages/Navigation";
 import { Outlet } from "react-router-dom";
 
-import {
-  ColorThemeProvider,
-  colorTheme,
-} from "./components/ColorTheme/ColorTheme.jsx";
 import {
   ColorThemeProvider,
   colorTheme,
