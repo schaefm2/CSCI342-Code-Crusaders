@@ -6,12 +6,26 @@ import React, { useEffect, useState } from 'react';
 
 // const accessToken = 'AFTTuMIzzrnEysC0SwGEYtTv1OO4'; // generated token from other response
 
+const logFlightData = (flights) => {
+    console.log(`Flight object length: ${flights.length}`)
+    for (let i = 0; i < flights.length; i++) {
+        const flight = flights[i];
+        // Log relevant flight information to the console
+        console.log(`Flight ${i + 1}:`);
+        console.log(`Departure: ${flight.itineraries[0].segments[0].departure.iataCode}`);
+        console.log(`Arrival: ${flight.itineraries[0].segments[0].arrival.iataCode}`);
+        console.log(`Price: ${flight.price.total} ${flight.price.currency}`);
+        console.log('------------------------');
+    }
+};
+
 // This is for querying the API to access some flight search data
 const flightSearch = ({ accessToken }) => {
 
     // useStates for flight search querys
     const [flights, setFlights] = useState([]);
     const [error, setError] = useState(null);
+    
 
 
     useEffect(() => {
@@ -39,6 +53,8 @@ const flightSearch = ({ accessToken }) => {
 
                 // After each key is appended to the url the search should then work
 
+                console.log(`Adding the accessToken to the response: ${accessToken}`)
+
                 const response = await fetch(url, {
                 
                     method: 'GET',
@@ -50,7 +66,11 @@ const flightSearch = ({ accessToken }) => {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to fetch flight from Amadeus API search');
+                    // throw new Error('Failed to fetch flight from Amadeus API search');
+
+                    const errorText = await response.text();
+                    console.error('Error response from API:', errorText);
+                    throw new Error(`Failed to fetch flight from Amadeus API: ${errorText}`);
                 }
 
                 const data = await response.json();
@@ -59,22 +79,36 @@ const flightSearch = ({ accessToken }) => {
                 console.log(data);
 
                 setFlights(data.data); // Set the flights data in state
+
             } catch (err) {
                 setError(`Error: ${err.message}`);
                 console.error(err);
             }
         };
 
-        fetchFlights();
+        // fetchFlights();
+
+        if (accessToken) {
+            fetchFlights();
+        }
+
     }, [accessToken]);  // keep dependency empty or it might run more than once, wasting tokens!
 
+    useEffect(() => {
+        if (flights.length > 0) {
+            logFlightData(flights);
+        }
+    }, [flights]);  // when flights change run this i.e. when flights gets filled
+
     if (error) {
-        return <div>{error}</div>;
+        console.error(error);
     }
 
     if (flights.length === 0) {
         return <div>Loading flights...</div>;
     }
+
+    // logFlightData(flights);   // This is used for testing...
 
     // Below can be used to render the flight to screen but this can be done elsewhere with raw data object
     // return (
@@ -93,6 +127,11 @@ const flightSearch = ({ accessToken }) => {
     //         </ul>
     //     </div>
     // );
+
+    
+
+    return null;
+
 }
 
 export default flightSearch;

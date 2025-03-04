@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import HotelsPage from "./pages/HotelsPage";
@@ -13,51 +13,60 @@ import {
   ColorThemeProvider,
   colorTheme,
 } from "./components/ColorTheme/ColorTheme.jsx";
-// import AmadeusAPITokenCreation from "./components/FlightData/AmadeusAPITokenCreation.jsx";
+import AmadeusAPITokenCreation from "./components/FlightData/AmadeusAPITokenCreation.jsx";
 import FlightData from "./components/FlightData/FlightData.jsx";
 import fetchAccessToken from "./components/FlightData/AmadeusAPITokenCreation.jsx";
 
 function App() {
   const [themeState, setThemeState] = useState(colorTheme);
   const [accessToken, setAccessToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Uncomment below if need to use access tokens
 
   // Checks and generates access tokens
-  // useEffect(() => {
-  //   const storedToken = localStorage.getItem('accessToken');
-  //   if (storedToken) {
-  //     console.log("Stored token found: ", storedToken);
-  //     setAccessToken(storedToken); // Use stored token if available
-  //   } else {
-  //     console.log("Fetching token...");
-  //     fetchAccessToken(setAccessToken);
-  //   }
-  // }, []);
+  useEffect(() => {
+    const getAccessToken = async () => {
+      try {
+        const token = await fetchAccessToken();
+        setAccessToken(token);
+        setLoading(false);
+      } catch (error) {
+        console.error('Failed to fetch token:', error);
+        setLoading(false);
+      }
+    };
 
+    getAccessToken();
+  }, []);
+
+  
   const renderFlightDataOrLoading = () => {
+
+    if (loading) {
+      return <div className="loading-message">Fetching API token, please wait...</div>;
+    }
+
     if (accessToken) {
       return <FlightData accessToken={accessToken} />;
     } else {
-      return (
-        <div className="loading-message">
-          Fetching API token, please wait...
-        </div>
-      );
+      return <div>Failed to fetch access token.</div>;
+      // return (
+      //   <div className="loading-message">
+      //     Fetching API token, please wait...
+      //   </div>
+      // );
     }
   };
 
   return (
     <ColorThemeProvider>
       <div>
-        {/* <h1>Flight Data</h1>
-        {renderFlightDataOrLoading()} */}
+        <h1>Flight Data</h1>
 
-        {/* WARNING WARNING WARNING!!! DONT UNCOMMENT BELOW */}
-        {/* Currently Generates 2 tokens and i've probably already used 500 debugging giving up for now */}
+        {/* TODO: Uncommenting below gets token and allows flight access*/}
+        {/* {renderFlightDataOrLoading()} */}
 
-        {/* If accessToken hasn't been acquired yet, then make token */}
-        {/* {!accessToken && <AmadeusAPITokenCreation fetchedToken={getAccesstoken} />} */}
 
         <Navigation />
         <Outlet />
