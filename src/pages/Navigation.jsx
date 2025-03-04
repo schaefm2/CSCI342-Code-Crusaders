@@ -7,7 +7,7 @@ const textWrapper =
 
 const Navigation = () => {
   return (
-    <nav className="w-[1404px] h-[50px]">
+    <nav className="relative w-[1404px] h-[50px]">
       <div className="inline-flex items-center gap-10 absolute top-[18px] left-[498px]">
         <NavLink to="/">
           <div className={textWrapper}> Home</div>
@@ -26,10 +26,12 @@ const Navigation = () => {
           <div className={textWrapper}>Trips</div>
         </NavLink>
       </div>
-      <div className="inline-flex items-center gap-2 absolute top-[18px] right-[20px]">
-        <button className="bg-black text-white px-4 py-2 rounded">
-          Log In
-        </button>
+      <div className="inline-flex items-center gap-2 absolute top-[5px] right-[20px]">
+        <NavLink to="/login">
+          <button className="bg-black text-white px-4 py-2 rounded">
+            Log In
+          </button>
+        </NavLink>
       </div>
       <div className="inline-flex items-center gap-1.5 absolute top-0 left-0">
         <img

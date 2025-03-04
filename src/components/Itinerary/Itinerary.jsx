@@ -44,6 +44,9 @@ const placeholderItinerary = {
   ],
 };
 
+// TODO: Currently the setters copy over the existing array to a new array for mutability sake.
+//       This is ineffecient so alternative could be using a library called immer if needed, but lists shouldnt get too long?
+
 const Itinerary = () => {
   // States to hold itinerary data (for future data which will be fetched from an API)
   const [itinerary, setItinerary] = useState(placeholderItinerary);
