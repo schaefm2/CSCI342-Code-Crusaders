@@ -30,13 +30,10 @@ const HotelSearch = ({ accessToken, cityCode }) => {
                         radius: 1,                  // Example: radius 1 kilometer
                         radiusUnit: 'KM',           // Unit for radius - 'KM' or 'MILE'
                     };
-
-
             
 
                     const url = new URL('https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city');
 
-                    // Add parameters to the URL
                     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
 
                     console.log(`Adding the accessToken to the response: ${accessToken}`);
@@ -57,7 +54,6 @@ const HotelSearch = ({ accessToken, cityCode }) => {
 
                     const data = await response.json();
 
-                    // Handle hotel data as needed
                     console.log(data);
 
                     setHotels(data.data); // Set the hotel data in state
@@ -82,7 +78,6 @@ const HotelSearch = ({ accessToken, cityCode }) => {
         console.error(error);
     }
 
-    // Optionally, return loading or error states if needed
     return null;
 };
 
