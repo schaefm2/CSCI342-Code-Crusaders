@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import HotelsPage from "./pages/HotelsPage";
@@ -13,51 +13,105 @@ import {
   ColorThemeProvider,
   colorTheme,
 } from "./components/ColorTheme/ColorTheme.jsx";
-// import AmadeusAPITokenCreation from "./components/FlightData/AmadeusAPITokenCreation.jsx";
+import AmadeusAPITokenCreation from "./components/FlightData/AmadeusAPITokenCreation.jsx";
 import FlightData from "./components/FlightData/FlightData.jsx";
 import fetchAccessToken from "./components/FlightData/AmadeusAPITokenCreation.jsx";
+import HotelData from "./components/Hotels/HotelData.jsx";
+
+
 
 function App() {
   const [themeState, setThemeState] = useState(colorTheme);
   const [accessToken, setAccessToken] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [cityCode, setCityCode] = useState("NYC"); // for testing purposes
+
+  const [tokenFetched, setTokenFetched] = useState(false);
+
 
   // Uncomment below if need to use access tokens
 
   // Checks and generates access tokens
-  // useEffect(() => {
-  //   const storedToken = localStorage.getItem('accessToken');
-  //   if (storedToken) {
-  //     console.log("Stored token found: ", storedToken);
-  //     setAccessToken(storedToken); // Use stored token if available
-  //   } else {
-  //     console.log("Fetching token...");
-  //     fetchAccessToken(setAccessToken);
-  //   }
-  // }, []);
+  useEffect(() => {
+    // if (!tokenFetched) {
+      const getAccessToken = async () => {
+        try {
+          const token = await fetchAccessToken();
+          setAccessToken(token);
+          setLoading(false);
+          // setTokenFetched(true);
+        } catch (error) {
+          console.error('Failed to fetch token:', error);
+          setLoading(false);
+        }
+      };
 
+      // if (!tokenFetched) {  // if not fetched...
+        getAccessToken();
+        // setTokenFetched(true);
+      // }
+    // }
+
+  }, [tokenFetched]);
+
+  // const getAccessToken = async () => {
+  //   try {
+  //     const token = await fetchAccessToken();
+  //     setAccessToken(token);  // Set the fetched token
+  //     setLoading(false);  // Set loading to false after token is fetched
+  //   } catch (error) {
+  //     console.error('Failed to fetch token:', error);
+  //     setLoading(false);  // Set loading to false in case of an error
+  //   }
+  // };
+
+  // // Check token status and fetch it when the app is first loaded
+  // if (accessToken === null) {
+  //   getAccessToken();  // Only run once when the app is first loaded
+  // }
+
+  
   const renderFlightDataOrLoading = () => {
+
+    if (loading) {
+      return <div className="loading-message">Fetching API token, please wait...</div>;
+    }
+
     if (accessToken) {
       return <FlightData accessToken={accessToken} />;
     } else {
-      return (
-        <div className="loading-message">
-          Fetching API token, please wait...
-        </div>
-      );
+      return <div>Failed to fetch access token.</div>;
+      // return (
+      //   <div className="loading-message">
+      //     Fetching API token, please wait...
+      //   </div>
+      // );
+    }
+  };
+
+  const renderHotelDataOrLoading = () => {
+
+    if (loading) {
+      return <div className="loading-message">Fetching API token, please wait...</div>;
+    }
+
+    if (accessToken) {
+      return <HotelData accessToken={accessToken} cityCode={cityCode} />;  // Hotel search component call
+    } else {
+      return <div>Failed to fetch access token for hotel search.</div>;
     }
   };
 
   return (
     <ColorThemeProvider>
       <div>
-        {/* <h1>Flight Data</h1>
-        {renderFlightDataOrLoading()} */}
+        <h1>Flight Data</h1>
 
-        {/* WARNING WARNING WARNING!!! DONT UNCOMMENT BELOW */}
-        {/* Currently Generates 2 tokens and i've probably already used 500 debugging giving up for now */}
+        {/* TODO: Uncommenting below gets token and allows flight access*/}
+        {renderFlightDataOrLoading()}
+        {renderHotelDataOrLoading()}
 
-        {/* If accessToken hasn't been acquired yet, then make token */}
-        {/* {!accessToken && <AmadeusAPITokenCreation fetchedToken={getAccesstoken} />} */}
+
 
         <Navigation />
         <Outlet />
