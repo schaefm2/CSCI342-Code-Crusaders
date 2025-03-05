@@ -7,10 +7,8 @@ import {
 
 // import { ColorThemeProvider, colorTheme } from './ColorTheme/ColorTheme.jsx';
 import { userColorTheme } from "../ColorTheme/ColorTheme";
-import './Search.css';
 
-
-const Search = () => {
+const Search = ({ placeholder, className }) => {
   const [query, setQuery] = useState("");
   const { theme } = userColorTheme();
 
@@ -31,24 +29,15 @@ const Search = () => {
   return (
     <>
       <GeoapifyContext apiKey="e96aed6945a84bcbb46d19d02f54e66c">
-        <div>
+        <div className={className}>
           {/* below is the textfield used in the search */}
           <GeoapifyGeocoderAutocomplete
-            placeholder="Enter a location or address"
+            placeholder={placeholder}
             type="city"
             value={query}
-            // onChange={handleInputChange} 
-            // onSelect={handlePlaceSelect} 
+            onChange={handleInputChange}
+            onSelect={handlePlaceSelect}
           />
-
-          {/* Button used to submit search */}
-          <button
-            className="search-button"
-            onClick={handleSearch} // Trigger search on click of button
-          >
-            Search
-          </button>
-
         </div>
       </GeoapifyContext>
     </>
