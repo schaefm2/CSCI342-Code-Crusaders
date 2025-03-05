@@ -2,7 +2,7 @@
 // API Key for Send/Recieve: d3xJ8zGuTjV0GwRNAmlzk6TvXHMy
 // what is gave me the second time????? AFTTuMIzzrnEysC0SwGEYtTv1OO4
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 // const accessToken = 'AFTTuMIzzrnEysC0SwGEYtTv1OO4'; // generated token from other response
 
@@ -26,13 +26,15 @@ const flightSearch = ({ accessToken }) => {
     const [flights, setFlights] = useState([]);
     const [error, setError] = useState(null);
     
-
+    const searchMade = useRef(false);
 
     useEffect(() => {
 
-        console.log("Starting flight search, using 1 token...")
+        if (accessToken && !searchMade.current) {
 
-        const fetchFlights = async () => {
+            console.log(`Starting flight search using acquired token: ${accessToken}`)
+
+            const fetchFlights = async () => {
             try {
 
                 // Define the query parameters for the flight search here, do dynamically later
@@ -80,16 +82,19 @@ const flightSearch = ({ accessToken }) => {
 
                 setFlights(data.data); // Set the flights data in state
 
+                searchMade.current = true;
+
             } catch (err) {
                 setError(`Error: ${err.message}`);
                 console.error(err);
             }
         };
 
-        // fetchFlights();
+        fetchFlights();
 
-        if (accessToken) {
-            fetchFlights();
+            // if (accessToken) {
+                // fetchFlights();
+            // }
         }
 
     }, [accessToken]);  // keep dependency empty or it might run more than once, wasting tokens!
@@ -104,9 +109,9 @@ const flightSearch = ({ accessToken }) => {
         console.error(error);
     }
 
-    if (flights.length === 0) {
-        return <div>Loading flights...</div>;
-    }
+    // if (flights.length === 0) {
+    //     return <div>Loading flights...</div>;
+    // }
 
     // logFlightData(flights);   // This is used for testing...
 
