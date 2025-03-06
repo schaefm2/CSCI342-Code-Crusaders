@@ -108,8 +108,12 @@ function App() {
         <h1>Flight Data</h1>
 
         {/* TODO: Uncommenting below gets token and allows flight access*/}
+        {
+        /* 
         {renderFlightDataOrLoading()}
         {renderHotelDataOrLoading()}
+        */
+        }
 
 
 

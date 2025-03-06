@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Forms.css";
 import { NavLink } from "react-router-dom";
 
 const LoginForm = () => {
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log("click registered");
+  }
+
   return (
     <div className="card">
-      <form>
+      <form onSubmit={handleSubmit}>
         <h2>Login</h2>
         <div className="container">
           <p>Need a Crusader Travels account?</p>
