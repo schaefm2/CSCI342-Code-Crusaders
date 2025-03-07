@@ -8,7 +8,7 @@ const fetchAccessToken = async () => {
 
         // Check if token exists and is not expired
         if (storedToken && tokenExpiration && new Date().getTime() < tokenExpiration) {
-            console.log("Using existing token...");
+            console.log(`Using existing token... ${storedToken}`);
             return storedToken;
         }
 
