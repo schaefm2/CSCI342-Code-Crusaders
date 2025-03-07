@@ -58,6 +58,7 @@ const FlightsPage = () => {
     }
   };
 
+  // used to check flightDataState (what holds users wanted search) is correctly updated
   const logFlightData = (flights) => {
     console.log(`Flight object length: ${flights.length}`)
     for (let i = 0; i < flights.length; i++) {
@@ -78,12 +79,12 @@ const FlightsPage = () => {
       <button onClick={handleSearch}
         style={{
           padding: '10px 20px',
-          backgroundColor: '#4CAF50', // Green background
-          color: 'white', // White text color
-          border: 'none', // No border
-          borderRadius: '4px', // Rounded corners
-          cursor: 'pointer', // Pointer cursor on hover
-          fontSize: '16px', // Font size
+          backgroundColor: '#4CAF50',
+          color: 'white',
+          border: 'none', 
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '16px',
         }}>
         Search
       </button>
