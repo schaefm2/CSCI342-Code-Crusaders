@@ -25,6 +25,11 @@ const FlightsPage = () => {
       );
     }
   };
+  const handleSearch = () => {
+    //navigate to results
+    // pass on query
+    return null;
+  };
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-row items-center justify-center">
@@ -52,6 +57,9 @@ const FlightsPage = () => {
           </div>
         )}
       </div>
+      <button className="text-white" onClick={handleSearch}>
+        Search Flights
+      </button>
     </div>
   );
 };
