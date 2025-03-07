@@ -12,6 +12,7 @@ import RentalsPage from "./pages/RentalsPage.jsx";
 import TripsPage from "./pages/TripsPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import LoginForm from "./components/Forms/LoginForm.jsx";
+import SignupForm from "./components/Forms/SignupForm.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
@@ -24,6 +25,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="trips" element={<TripsPage />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="login" element={<LoginForm />} />
+          <Route path="signup" element={<SignupForm/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

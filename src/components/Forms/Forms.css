@@ -66,7 +66,7 @@
   justify-content: left;
 }
 
-.login-btn {
+.login-btn, .signup-btn {
   color: white;
   background-color: #2754b5;
 }

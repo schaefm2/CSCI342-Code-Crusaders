@@ -18,7 +18,7 @@ import FlightData from "./components/FlightData/FlightData.jsx";
 import fetchAccessToken from "./components/FlightData/AmadeusAPITokenCreation.jsx";
 import HotelData from "./components/Hotels/HotelData.jsx";
 
-
+import { AccessTokenProvider } from './components/AccessTokenContext/AccessTokenContext.jsx';
 
 function App() {
   const [themeState, setThemeState] = useState(colorTheme);
@@ -32,27 +32,27 @@ function App() {
   // Uncomment below if need to use access tokens
 
   // Checks and generates access tokens
-  useEffect(() => {
-    // if (!tokenFetched) {
-      const getAccessToken = async () => {
-        try {
-          const token = await fetchAccessToken();
-          setAccessToken(token);
-          setLoading(false);
-          // setTokenFetched(true);
-        } catch (error) {
-          console.error('Failed to fetch token:', error);
-          setLoading(false);
-        }
-      };
+  // useEffect(() => {
+  //   // if (!tokenFetched) {
+  //     const getAccessToken = async () => {
+  //       try {
+  //         const token = await fetchAccessToken();
+  //         setAccessToken(token);
+  //         setLoading(false);
+  //         // setTokenFetched(true);
+  //       } catch (error) {
+  //         console.error('Failed to fetch token:', error);
+  //         setLoading(false);
+  //       }
+  //     };
 
-      // if (!tokenFetched) {  // if not fetched...
-        getAccessToken();
-        // setTokenFetched(true);
-      // }
-    // }
+  //     // if (!tokenFetched) {  // if not fetched...
+  //       getAccessToken();
+  //       // setTokenFetched(true);
+  //     // }
+  //   // }
 
-  }, [tokenFetched]);
+  // }, [tokenFetched]);
 
   // const getAccessToken = async () => {
   //   try {
@@ -104,18 +104,21 @@ function App() {
 
   return (
     <ColorThemeProvider>
-      <div>
-        <h1>Flight Data</h1>
+      <AccessTokenProvider>
+        <div>
+          <h1>Flight Data</h1>
 
-        {/* TODO: Uncommenting below gets token and allows flight access*/}
-        {renderFlightDataOrLoading()}
-        {renderHotelDataOrLoading()}
+          {/* TODO: Uncommenting below gets token and allows flight access*/}
+          
+          {/* {renderFlightDataOrLoading()} */}
+          {/* {renderHotelDataOrLoading()} */}
+          
 
 
-
-        <Navigation />
-        <Outlet />
-      </div>
+          <Navigation />
+          <Outlet />
+        </div>
+      </AccessTokenProvider>
     </ColorThemeProvider>
   );
 }
