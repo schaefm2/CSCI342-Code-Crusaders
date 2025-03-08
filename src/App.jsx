@@ -6,7 +6,7 @@ import HotelsPage from "./pages/HotelsPage";
 import FlightsPage from "./pages/FlightsPage";
 import RentalsPage from "./pages/RentalsPage";
 import TripsPage from "./pages/TripsPage";
-import Navigation from "./pages/Navigation";
+import Navigation from "./components/Nav/Navigation.jsx";
 import { Outlet } from "react-router-dom";
 
 import {
@@ -18,7 +18,7 @@ import FlightData from "./components/FlightData/FlightData.jsx";
 import fetchAccessToken from "./components/FlightData/AmadeusAPITokenCreation.jsx";
 import HotelData from "./components/Hotels/HotelData.jsx";
 
-import { AccessTokenProvider } from './components/AccessTokenContext/AccessTokenContext.jsx';
+import { AccessTokenProvider } from "./components/AccessTokenContext/AccessTokenContext.jsx";
 
 function App() {
   const [themeState, setThemeState] = useState(colorTheme);
@@ -27,7 +27,6 @@ function App() {
   const [cityCode, setCityCode] = useState("NYC"); // for testing purposes
 
   const [tokenFetched, setTokenFetched] = useState(false);
-
 
   // Uncomment below if need to use access tokens
 
@@ -70,11 +69,13 @@ function App() {
   //   getAccessToken();  // Only run once when the app is first loaded
   // }
 
-  
   const renderFlightDataOrLoading = () => {
-
     if (loading) {
-      return <div className="loading-message">Fetching API token, please wait...</div>;
+      return (
+        <div className="loading-message">
+          Fetching API token, please wait...
+        </div>
+      );
     }
 
     if (accessToken) {
@@ -90,13 +91,16 @@ function App() {
   };
 
   const renderHotelDataOrLoading = () => {
-
     if (loading) {
-      return <div className="loading-message">Fetching API token, please wait...</div>;
+      return (
+        <div className="loading-message">
+          Fetching API token, please wait...
+        </div>
+      );
     }
 
     if (accessToken) {
-      return <HotelData accessToken={accessToken} cityCode={cityCode} />;  // Hotel search component call
+      return <HotelData accessToken={accessToken} cityCode={cityCode} />; // Hotel search component call
     } else {
       return <div>Failed to fetch access token for hotel search.</div>;
     }
@@ -105,15 +109,13 @@ function App() {
   return (
     <ColorThemeProvider>
       <AccessTokenProvider>
-        <div>
-          <h1>Flight Data</h1>
+        <div className="flex flex-col ">
+          {/*<h1>Flight Data</h1>* no idea why this is here/}
 
           {/* TODO: Uncommenting below gets token and allows flight access*/}
-          
+
           {/* {renderFlightDataOrLoading()} */}
           {/* {renderHotelDataOrLoading()} */}
-          
-
 
           <Navigation />
           <Outlet />
