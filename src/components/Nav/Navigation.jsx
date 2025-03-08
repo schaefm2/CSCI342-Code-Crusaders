@@ -34,6 +34,7 @@ const Navigation = () => {
           </NavLink>
         </div>
         <div className="inline-flex items-center gap-2">
+          {/* note will conditionally render this later*/}
           <NavLink to="/login">
             <button className="bg-black text-white px-4 py-2 rounded">
               Log In
