@@ -1,11 +1,24 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
 import MaterialSymbolsTravelExplore from "../../assets/material-symbols_travel-explore.svg";
 
 const textWrapper =
   "relative w-fit mt-[-1.00px] [font-family:'Montserrat-Medium',Helvetica] font-medium text-black text-base tracking-[0] leading-4 whitespace-nowrap";
 
 const Navigation = () => {
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const logoutHandler = () => {
+    localStorage.removeItem("user");
+    dispatch(logout());
+    console.log("Logged out");
+    navigate("/");
+    console.log("email", user.email);
+  };
   return (
     <nav className="bg-blue-200 w-full h-[65px] fixed top-0 left-0 z-10">
       <div className="container h-full flex justify-between items-center">
@@ -33,14 +46,25 @@ const Navigation = () => {
             <div className={textWrapper}>Trips</div>
           </NavLink>
         </div>
-        <div className="inline-flex items-center gap-2">
-          {/* note will conditionally render this later*/}
-          <NavLink to="/login">
-            <button className="bg-black text-white px-4 py-2 rounded">
-              Log In
-            </button>
-          </NavLink>
-        </div>
+        {user.email ? (
+          <div className="inline-flex items-center gap-2">
+            {/* note will conditionally render this later*/}
+            <NavLink to="/account">
+              <button className="bg-black text-white px-4 py-2 rounded">
+                Account
+              </button>
+            </NavLink>
+          </div>
+        ) : (
+          <div className="inline-flex items-center gap-2">
+            {/* note will conditionally render this later*/}
+            <NavLink to="/login">
+              <button className="bg-black text-white px-4 py-2 rounded">
+                Log In
+              </button>
+            </NavLink>
+          </div>
+        )}
       </div>
     </nav>
   );

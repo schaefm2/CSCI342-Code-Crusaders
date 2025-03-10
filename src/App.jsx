@@ -1,11 +1,5 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import HotelsPage from "./pages/HotelsPage";
-import FlightsPage from "./pages/FlightsPage";
-import RentalsPage from "./pages/RentalsPage";
-import TripsPage from "./pages/TripsPage";
 import Navigation from "./components/Nav/Navigation.jsx";
 import { Outlet } from "react-router-dom";
 
@@ -19,6 +13,8 @@ import fetchAccessToken from "./components/FlightData/AmadeusAPITokenCreation.js
 import HotelData from "./components/Hotels/HotelData.jsx";
 
 import { AccessTokenProvider } from "./components/AccessTokenContext/AccessTokenContext.jsx";
+
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const [themeState, setThemeState] = useState(colorTheme);
@@ -119,6 +115,7 @@ function App() {
 
           <Navigation />
           <Outlet />
+          <Toaster />
         </div>
       </AccessTokenProvider>
     </ColorThemeProvider>
