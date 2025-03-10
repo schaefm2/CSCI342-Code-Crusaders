@@ -15,6 +15,8 @@ import TripsPage from "./pages/TripsPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import LoginForm from "./components/Forms/LoginForm.jsx";
 import SignupForm from "./components/Forms/SignupForm.jsx";
+import AccountPage from "./components/Account/Account.jsx";
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
@@ -29,6 +31,8 @@ createRoot(document.getElementById("root")).render(
             <Route path="*" element={<NotFoundPage />} />
             <Route path="login" element={<LoginForm />} />
             <Route path="signup" element={<SignupForm />} />
+            {/* Protected Routes still to be added */}
+            <Route path="account" element={<AccountPage/>} />
           </Route>
         </Routes>
       </BrowserRouter>
