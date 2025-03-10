@@ -3,11 +3,10 @@ import "./Forms.css";
 import { NavLink } from "react-router-dom";
 
 const LoginForm = () => {
-
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("click registered");
-  }
+  };
 
   return (
     <div className="card">
@@ -22,7 +21,7 @@ const LoginForm = () => {
 
         <label htmlFor="email">
           {" "}
-          <b className="email-login">Username Or Email</b>
+          <b className="email-login">Email</b>
         </label>
         <input
           className="email-input"
