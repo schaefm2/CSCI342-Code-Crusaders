@@ -1,7 +1,9 @@
 import React, { useState, useCallback } from "react";
 import { useDebounce } from "react-use";
 import { fetchAirportCities } from "../FlightData/AmadeusAPITokenCreation";
-const AirportSearch = ({ placeholder }) => {
+
+// Forward ref to the input element
+const AirportSearch = React.forwardRef(({ placeholder }, ref) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -26,9 +28,11 @@ const AirportSearch = ({ placeholder }) => {
     setQuery(`${item.name} (${item.iataCode})`); // Display selected value
     setSuggestions([]); // Clear suggestions
   };
+
   return (
     <div className="shadow">
       <input
+        ref={ref} // Attach ref to the input element
         className="w-50 h-15 text-lg px-2"
         type="text"
         placeholder={placeholder}
@@ -53,6 +57,6 @@ const AirportSearch = ({ placeholder }) => {
       )}
     </div>
   );
-};
+});
 
 export default AirportSearch;
