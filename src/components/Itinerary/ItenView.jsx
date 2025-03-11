@@ -91,6 +91,7 @@ const ItenView = () => {
                     <p className="mt-1">{activity.description}</p>
                     <p className="text-sm text-gray-400">{activity.address}</p>
                   </td>
+                  <button>Edit</button>
                 </tr>
               ))}
             </tbody>

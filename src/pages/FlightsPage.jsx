@@ -4,6 +4,7 @@ import arrow from "../assets/arrow.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useAccessToken } from "../components/AccessTokenContext/AccessTokenContext.jsx";
+import flightSearch from "../components/FlightData/FlightData.jsx";
 
 const FlightsPage = () => {
   const [oneWay, setOneWay] = useState(false);
@@ -18,6 +19,7 @@ const FlightsPage = () => {
   const [currencyCodeState, setCurrencyCode] = useState("USD");
 
   const [flights, setFlights] = useState([]);
+  const [error, setError] = useState(null);
 
   const renderArrow = () => {
     if (oneWay) {
@@ -38,10 +40,31 @@ const FlightsPage = () => {
     }
   };
   const handleSearch = () => {
+    if (loading) {
+      console.log("Awaiting access token");
+    }
+
+    if (!accessToken) {
+      console.log("Failed to get access token");
+      return;
+    }
+    flightSearch({
+      accessToken,
+      originLocationCode: "JFK",
+      destinationLocationCode: destinationState,
+      departureDate: departureDateState,
+      returnDate: returnDateState,
+      adults: Number(adultsState),
+      maxPrice: Number(maxPriceState),
+      currencyCode: currencyCodeState,
+      setFlights,
+      setError,
+    });
+    console.log(flights);
     return null;
   };
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center mt-10">
       <div className="flex flex-row items-center justify-center">
         <AirportSearch placeholder="From" />
         {renderArrow()}
@@ -51,8 +74,8 @@ const FlightsPage = () => {
         <div className="flex flex-col items-center p-4">
           <label className="mb-2 text-lg font-semibold">Departing</label>
           <DatePicker
-            selected={startDate}
-            onChange={(date) => setStartDate(date)}
+            selected={departureDateState}
+            onChange={(date) => setDepartureDate(date)}
             className="w-full p-2 rounded-full shadow text-center"
           />
         </div>
@@ -60,8 +83,8 @@ const FlightsPage = () => {
           <div className="flex flex-col items-center p-4">
             <label className="mb-2 text-lg font-semibold">Returning</label>
             <DatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
+              selected={returnDateState}
+              onChange={(date) => setReturnDate(date)}
               className="w-full p-2 rounded-full shadow text-center"
             />
           </div>
@@ -70,6 +93,20 @@ const FlightsPage = () => {
       <button className="bg-black text-white" onClick={handleSearch}>
         Search Flights
       </button>
+      {flights.map((flight, index) => {
+        return (
+          <div className="flex justiy-center shadow">
+            <div className="p-4" key={index}>
+              From {flight.itineraries[0].segments[0].departure.iataCode}
+            </div>
+            <div className="p-4">Price {flight.price.base}</div>
+            <div className="p-4">
+              {flight.itineraries[0].segments[0].departure.at}
+            </div>
+            <button className="bg-black text-white">Add</button>
+          </div>
+        );
+      })}
     </div>
   );
 };
