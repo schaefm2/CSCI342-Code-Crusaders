@@ -3,10 +3,22 @@ import AirportSearch from "../components/AirportSearch/AirportSearch";
 import arrow from "../assets/arrow.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useAccessToken } from "../components/AccessTokenContext/AccessTokenContext.jsx";
 
 const FlightsPage = () => {
   const [oneWay, setOneWay] = useState(false);
-  const [startDate, setStartDate] = useState(new Date());
+  const { accessToken, loading } = useAccessToken();
+
+  const [originState, setOrigin] = useState("JFK");
+  const [destinationState, setDestination] = useState("LAX");
+  const [departureDateState, setDepartureDate] = useState("2025-05-01");
+  const [returnDateState, setReturnDate] = useState("2025-05-10");
+  const [adultsState, setAdults] = useState("2");
+  const [maxPriceState, setMaxPrice] = useState("499");
+  const [currencyCodeState, setCurrencyCode] = useState("USD");
+
+  const [flights, setFlights] = useState([]);
+
   const renderArrow = () => {
     if (oneWay) {
       return (
@@ -26,8 +38,6 @@ const FlightsPage = () => {
     }
   };
   const handleSearch = () => {
-    //navigate to results
-    // pass on query
     return null;
   };
   return (
@@ -57,7 +67,7 @@ const FlightsPage = () => {
           </div>
         )}
       </div>
-      <button className="text-white" onClick={handleSearch}>
+      <button className="bg-black text-white" onClick={handleSearch}>
         Search Flights
       </button>
     </div>
