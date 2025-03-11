@@ -10,11 +10,10 @@ const logFlightData = (flights) => {
 
     // Access departure and arrival times and airport codes
     const departureAirport = flight.itineraries[0].segments[0].departure.iataCode;
-    const departureTime = flight.itineraries[0].segments[0].departure.at; // Departure time in ISO format
+    const departureTime = flight.itineraries[0].segments[0].departure.at; 
     const arrivalAirport = flight.itineraries[0].segments[0].arrival.iataCode;
-    const arrivalTime = flight.itineraries[0].segments[0].arrival.at; // Arrival time in ISO format
+    const arrivalTime = flight.itineraries[0].segments[0].arrival.at; 
 
-    // Log relevant flight information to the console
     console.log(`Flight ${i + 1}:`);
 
     // Format the date/time as MM/DD/YYYY
