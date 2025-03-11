@@ -3,24 +3,34 @@
 
 import React, { useEffect, useState, useRef } from "react";
 
-// const accessToken = 'AFTTuMIzzrnEysC0SwGEYtTv1OO4'; // generated token from other response
-
 const logFlightData = (flights) => {
   console.log(`Flight object length: ${flights.length}`);
   for (let i = 0; i < flights.length; i++) {
     const flight = flights[i];
-    // Log relevant flight information to the console
+
+    // Access departure and arrival times and airport codes
+    const departureAirport = flight.itineraries[0].segments[0].departure.iataCode;
+    const departureTime = flight.itineraries[0].segments[0].departure.at; 
+    const arrivalAirport = flight.itineraries[0].segments[0].arrival.iataCode;
+    const arrivalTime = flight.itineraries[0].segments[0].arrival.at; 
+
     console.log(`Flight ${i + 1}:`);
+
+    // Format the date/time as MM/DD/YYYY
+    const formattedDepartureTime = new Date(departureTime).toLocaleString();
+    const formattedArrivalTime = new Date(arrivalTime).toLocaleString();
+
     console.log(
-      `Departure: ${flight.itineraries[0].segments[0].departure.iataCode}`
+      `Departure: ${departureAirport} at ${formattedDepartureTime}`
     );
     console.log(
-      `Arrival: ${flight.itineraries[0].segments[0].arrival.iataCode}`
+      `Arrival: ${arrivalAirport} at ${formattedArrivalTime}`
     );
     console.log(`Price: ${flight.price.total} ${flight.price.currency}`);
     console.log("------------------------");
   }
 };
+
 
 // This is for querying the API to access some flight search data
 // Removed useState and useEffect hooks from this function
