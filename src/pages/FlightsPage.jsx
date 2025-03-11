@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import AirportSearch from "../components/AirportSearch/AirportSearch";
 import arrow from "../assets/arrow.svg";
 import DatePicker from "react-datepicker";
@@ -25,11 +25,39 @@ const FlightsPage = () => {
 
   const originRef = useRef();
   const destinationRef = useRef();
+  const [sortOrder, setSortOrder] = useState("asc");
+
 
   // Format to 'YYYY-MM-DD' but not needed if doing it directly in useStates
   // const formattedDepartureDate = departureDateState.toISOString().split('T')[0];
   // const formattedReturnDate = returnDateState.toISOString().split('T')[0]; 
 
+  const sortFlightsByPrice = (flights, order) => {
+    return flights.sort((a, b) => {
+      const priceA = a.price.base;
+      const priceB = b.price.base;
+      if (order === "asc") {
+        return priceA - priceB;
+      } else {
+        return priceB - priceA;
+      }
+    });
+  };
+
+  // Apply sorting whenever flights or sortOrder changes
+  useEffect(() => {
+    if (flights.length > 0) {
+      const sortedFlights = sortFlightsByPrice([...flights], sortOrder);  // ... allows shallow copy for reapplying flights after sorted
+      setFlights(sortedFlights);
+    }
+  }, [sortOrder]); // Reapply sorting whenever flights or sortOrder changes (based on sort dropdown)
+
+  const handleSortChange = (event) => {
+    const selectedOrder = event.target.value;
+    setSortOrder(selectedOrder);
+    const sortedFlights = sortFlights([...flights], selectedOrder);
+    setFlights(sortedFlights);
+  };
 
   const renderArrow = () => {
     if (oneWay) {
@@ -150,6 +178,21 @@ const FlightsPage = () => {
       <button className="bg-black text-white" onClick={handleSearch}>
         Search Flights
       </button>
+
+        {/* Adds a filter dropdown with filter options for the flights */}
+      <div className="mt-6">
+        <label htmlFor="sort" className="mr-4 text-lg">Sort by Price:</label>
+        <select 
+          id="sort" 
+          value={sortOrder}
+          onChange={handleSortChange}
+          className="p-2 border rounded-full">
+
+          <option value="asc">Price: Low to High</option>
+          <option value="desc">Price: High to Low</option>
+        </select>
+      </div>
+
       <div className="w-full mt-10">
         {flights.map((flight, index) => {
           const departureAirport = flight.itineraries[0].segments[0].departure.iataCode;
