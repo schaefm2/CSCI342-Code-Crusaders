@@ -171,19 +171,34 @@ const FlightsPage = () => {
   return (
     <div className="flex flex-col items-center mt-10">
       <div className="flex flex-row items-center justify-center">
-      <AirportSearch 
-          placeholder="From" 
-          // onSelect={(airportCode) => setOrigin(airportCode)} // Update origin airport for search
-          ref={originRef}
-        />
-        {renderArrow()}
-        <AirportSearch 
-          placeholder="To" 
-          // onSelect={(airportCode) => setDestination(airportCode)} // Update destination airport for search
-          ref={destinationRef}
-          />
-      </div>
+        
+        <div className="relative">
+            <AirportSearch 
+              placeholder="From" 
+              ref={originRef}
+            />
+            {/* Autocomplete suggestions for "From" */}
+            <div className="absolute top-full mt-2 bg-white shadow-lg rounded-md max-h-40 overflow-auto w-full z-10">
+              {/* Render suggestions here */}
+            </div>
+          </div>
+          {renderArrow()}
+          <div className="relative">
+            <AirportSearch 
+              placeholder="To" 
+              ref={destinationRef}
+            />
+            {/* Autocomplete suggestions for "To" */}
+            <div className="absolute top-full mt-2 bg-white shadow-lg rounded-md max-h-40 overflow-auto w-full z-10">
+              {/* Render suggestions here */}
+            </div>
+          </div>
+        </div>
+
+
+
       <div className="px-4 flex flex-row items-center justify-center">
+
         <div className="flex flex-col items-center p-4">
           <label className="mb-2 text-lg font-semibold">Departing</label>
           <DatePicker
@@ -192,6 +207,7 @@ const FlightsPage = () => {
             className="w-full p-2 rounded-full shadow text-center"
           />
         </div>
+
         {!oneWay && (
           <div className="flex flex-col items-center p-4">
             <label className="mb-2 text-lg font-semibold">Returning</label>
@@ -202,7 +218,9 @@ const FlightsPage = () => {
             />
           </div>
         )}
+
       </div>
+
       <button className="bg-black text-white" onClick={handleSearch}>
         Search Flights
       </button>

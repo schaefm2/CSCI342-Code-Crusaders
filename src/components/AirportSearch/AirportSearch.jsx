@@ -18,7 +18,7 @@ const AirportSearch = React.forwardRef(({ placeholder }, ref) => {
         setSuggestions([]);
       }
     },
-    500, // Delay in ms
+    500, // Delay in ms 500 is .5 seconds
     [query]
   );
 
@@ -30,9 +30,9 @@ const AirportSearch = React.forwardRef(({ placeholder }, ref) => {
   };
 
   return (
-    <div className="shadow">
+    <div className="relative">
       <input
-        ref={ref} // Attach ref to the input element
+        ref={ref}
         className="w-50 h-15 text-lg px-2"
         type="text"
         placeholder={placeholder}
@@ -42,11 +42,12 @@ const AirportSearch = React.forwardRef(({ placeholder }, ref) => {
           setSelected(null);
         }}
       />
+
       {suggestions.length > 0 && (
-        <ul className="suggestions">
+        <ul className="absolute top-full mt-2 bg-white shadow-lg rounded-md max-h-40 overflow-auto w-full z-10 border border-gray-300">
           {suggestions.map((item) => (
             <li
-              className="cursor-pointer"
+              className="cursor-pointer px-4 py-2 hover:bg-gray-200"
               key={item.id}
               onClick={() => handleSelect(item)}
             >
