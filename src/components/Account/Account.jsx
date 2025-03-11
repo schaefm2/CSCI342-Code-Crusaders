@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { useSelector } from "react-redux"; // Redux hook for accessing state
+import { toast } from "react-hot-toast"
 
 const AccountPage = () => {
     // assuming max is going to set up the correct dispatch calls in loginForm.jsx
@@ -23,18 +24,15 @@ const AccountPage = () => {
         setCompany(user.company || ""); 
         setProfession(user.profession || ""); 
         setCompany(user.company || "");
-      }, [user]);
+    }, [user]);
     
     /*
-    I have to use the state auth store in order to grab the correct account data. theres a part of one of his lectures where he goes over protected routes as well. I might have to mess with the signup form to make sure that the store is keeping the newest state. 
-    after a functional account page is done that works with user data from local storage, then im done. 
-    CHECKLIST:
-    - check the functionality of store in signup and login
-    - implement functional account page that is linked with a protected route. 
-    - max said he will work on login page so im not going to touch that anymore
+    - using dipatch() call to store in loginForm.jsx
+    - using localstorage to hold temporary user and password (WILL NEED TO BE CHANGED TO DATABASE)
+    - altered Navigation.jsx to correctly display and account button or login button based on user data in the store
+    - implemented protected route based on a loaded state and user presence
     */
-
-
+   
   return (
     <div className="min-h-screen bg-reviewColor flex items-center justify-center p-8">
       <div className="bg-white shadow-md rounded p-8 w-full max-w-4xl">
@@ -152,17 +150,17 @@ const AccountPage = () => {
         {/* Submit Button */}
         <div className="flex items-center justify-center mt-6">
           <button
-            type="submit"
             style={{
               backgroundColor: 'var(--blueButtonColor)',
             }}
             className="w-full md:w-auto text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline transition-colors duration-300 hover:bg-blue-700"
+            onClick={() => toast.success('Changes saved!')}
           >
             Save Changes
           </button>
         </div>
 
-        {/* future Trip Planning Data Section */}
+        {/* future trip planning data section */}
 
         <div className="mt-10 p-6 bg-passiveGreen rounded">
           <h3 className="text-xl font-semibold mb-2">Trip Planning Data</h3>
