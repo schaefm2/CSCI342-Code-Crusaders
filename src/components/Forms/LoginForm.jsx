@@ -42,15 +42,13 @@ const LoginForm = () => {
     const storedEmail = userData ? userData.email : null;
     const storedPassword = userData ? userData.password : null;
 
-    console.log(email);
-
     if (email === storedEmail && userData.password === storedPassword) {
-      console.log("Login successful");
+      toast.success("login successful");
       dispatch(login(userData))
       navigate("/account")
 
     } else {
-      console.log("Invalid email or password");
+      toast.error("Invalid email or password");
     }
     console.log("click registered");
     // ENDING HERE
