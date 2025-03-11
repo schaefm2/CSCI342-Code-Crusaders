@@ -45,6 +45,7 @@ const flightSearch = async ({
   currencyCode,
   setFlights,
   setError,
+  oneWay
 }) => {
   try {
     // Log the parameters to confirm they're correctly passed
@@ -56,17 +57,22 @@ const flightSearch = async ({
       adults,
       maxPrice,
       currencyCode,
+      oneWay
     });
 
     const params = {
       originLocationCode,
       destinationLocationCode,
       departureDate,
-      returnDate,
       adults,
       maxPrice,
       currencyCode,
     };
+
+    // Only add returnDate if it's a round-trip (oneWay is false)
+    if (!oneWay && returnDate) {
+      params.returnDate = returnDate;
+    }
 
     const url = new URL(
       "https://test.api.amadeus.com/v2/shopping/flight-offers"

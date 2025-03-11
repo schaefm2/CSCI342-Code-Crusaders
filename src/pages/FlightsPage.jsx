@@ -12,10 +12,10 @@ const FlightsPage = () => {
   const [oneWay, setOneWay] = useState(false);
   const { accessToken, loading } = useAccessToken();
 
-  const [originState, setOrigin] = useState('JFK');
-  const [destinationState, setDestination] = useState('LAX');
-  const [departureDateState, setDepartureDate] = useState(new Date('2025-05-01'));
-  const [returnDateState, setReturnDate] = useState(new Date('2025-05-10'));
+  const [originState, setOrigin] = useState('');
+  const [destinationState, setDestination] = useState('');
+  const [departureDateState, setDepartureDate] = useState(new Date('2025-01-02'));
+  const [returnDateState, setReturnDate] = useState(new Date('2025-01-03'));
   const [adultsState, setAdults] = useState('2');
   const [maxPriceState, setMaxPrice] = useState('499');
   const [currencyCodeState, setCurrencyCode] = useState('USD');
@@ -122,6 +122,12 @@ const FlightsPage = () => {
       return;
     }
 
+    
+    // if (oneWay) {  // if one way send nothing for return date
+    //   console.log("One way detected in handleSearch, setting returnDate to empty")
+    //   setReturnDate('');
+    // }
+
     console.log(`None formatted depart date: ${departureDateState}  with formatted return date: ${returnDateState}`)
 
     const formattedDepartureDate = setDateToMidnight(departureDateState).toISOString().split('T')[0]; // Format to 'YYYY-MM-DD'
@@ -149,13 +155,15 @@ const FlightsPage = () => {
       originLocationCode: originAirport,
       destinationLocationCode: destinationAirport,
       departureDate: formattedDepartureDate,
-      returnDate: !oneWay ? formattedReturnDate : null,
+      returnDate: !oneWay ? formattedReturnDate : "",
       adults: Number(adultsState),
       maxPrice: Number(maxPriceState),
       currencyCode: currencyCodeState,
       setFlights,
       setError,
+      oneWay
     });
+
     console.log(flights);
 
     // setFilteredFlights(flights);
