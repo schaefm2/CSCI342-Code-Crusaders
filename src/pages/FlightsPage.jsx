@@ -150,20 +150,28 @@ const FlightsPage = () => {
       <button className="bg-black text-white" onClick={handleSearch}>
         Search Flights
       </button>
-      {flights.map((flight, index) => {
-        return (
-          <div className="flex justiy-center shadow">
-            <div className="p-4" key={index}>
-              From {flight.itineraries[0].segments[0].departure.iataCode}
+      <div className="w-full mt-10">
+        {flights.map((flight, index) => {
+          const departureAirport = flight.itineraries[0].segments[0].departure.iataCode;
+          const departureTime = flight.itineraries[0].segments[0].departure.at;
+          const arrivalAirport = flight.itineraries[0].segments[0].arrival.iataCode;
+          const arrivalTime = flight.itineraries[0].segments[0].arrival.at;
+
+          return (
+            <div key={index} className="flex flex-col items-center bg-white shadow-lg rounded-lg mb-6 p-6">
+              <div className="w-full flex justify-between items-center">
+                <div className="text-xl font-semibold">{departureAirport} to {arrivalAirport}</div>
+                <div className="text-lg font-semibold">{flight.price.base} {flight.price.currency}</div>
+              </div>
+              <div className="w-full mt-2 flex justify-between">
+                <div className="text-sm">Departure: {new Date(departureTime).toLocaleString()}</div>
+                <div className="text-sm">Arrival: {new Date(arrivalTime).toLocaleString()}</div>
+              </div>
+              <button className="bg-black text-white p-2 rounded-full mt-4">Add</button>
             </div>
-            <div className="p-4">Price {flight.price.base}</div>
-            <div className="p-4">
-              {flight.itineraries[0].segments[0].departure.at}
-            </div>
-            <button className="bg-black text-white">Add</button>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };
