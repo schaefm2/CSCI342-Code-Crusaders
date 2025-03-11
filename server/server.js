@@ -22,48 +22,47 @@ mongoose
 
 //define user schema here
 const userSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    profession: { type: String, required: true},
-    phone: { type: String, required: true },
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-})
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  profession: { type: String, required: true },
+  phone: { type: String, required: true },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+});
 
 //TODO: other schemas
 
-const flightSchema = new mongoose.Schema({
-    departure: { type: String, required: true },
-    departureDate: { type: String, required: true },
-    departureTime: { type: String, required: true },
-    arrival: { type: String, required: true },
-    arrivalDate: { type: String, required: true },
-    arrivalTime: { type: String, required: true },
-    price: { type: Number, required: true },
-    currency: { type: String, required: true },
-})
-
-const hotelSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    city: { type: String, required: true },
-    latitude: { type: Number, required: true },
-    longitude: { type: Number, required: true },
-    distance: { type: Number, required: true }, 
-})
-
 const tripSchema = new mongoose.Schema({
-    email: { type: String, required: true }, //foreign key to user
-    flights: [flightSchema],
-    hotels: [hotelSchema],
-    startDate: { type: String, required: true },
-    endDate: { type: String, required: true },
-    tripName: { type: String, required: true },
-})
-
+  email: { type: String, required: true }, //foreign key to user
+  flights: [
+    {
+      departure: { type: String, required: true },
+      departureDate: { type: String, required: true },
+      departureTime: { type: String, required: true },
+      arrival: { type: String, required: true },
+      arrivalDate: { type: String, required: true },
+      arrivalTime: { type: String, required: true },
+      price: { type: Number, required: true },
+      currency: { type: String, required: true },
+    },
+  ],
+  hotels: [
+    {
+      name: { type: String, required: true },
+      city: { type: String, required: true },
+      latitude: { type: Number, required: true },
+      longitude: { type: Number, required: true },
+      distance: { type: Number, required: true },
+    },
+  ],
+  startDate: { type: String, required: true },
+  endDate: { type: String, required: true },
+  tripName: { type: String, required: true },
+});
 
 //
 const authenticateJWT = (req, res, next) => {
-    /*const token = req.header("Authorization")?.split(" ")[1];
+  /*const token = req.header("Authorization")?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ message: "unauthorized" });
     }
@@ -75,8 +74,8 @@ const authenticateJWT = (req, res, next) => {
         req.user = user;
         next();
     });*/
-    next();
-} //COMMENTED OUT TO TEST WITHOUT AUTHENTICATION
+  next();
+}; //COMMENTED OUT TO TEST WITHOUT AUTHENTICATION
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -93,7 +92,7 @@ const validatePassword = (password) => {
 };
 
 app.post("/api/signup", async (req, res) => {
-    const {email, password, ...rest} = req.body;
+  const { email, password, ...rest } = req.body;
   try {
     const user = await User.findOne({ email });
     if (user) {
@@ -106,7 +105,7 @@ app.post("/api/signup", async (req, res) => {
       });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ ...rest,email, password: hashedPassword });
+    const newUser = new User({ ...rest, email, password: hashedPassword });
 
     await newUser.save();
 
@@ -122,147 +121,136 @@ app.post("/api/signup", async (req, res) => {
 });
 
 app.post("/api/login", async (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ message: "please fill all required fields" });
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "please fill all required fields" });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(401).json({ message: "user does not exist" });
     }
-  
-    try {
-      const user = await User.findOne({email});
 
-      if (!user) {
-        return res.status(401).json({ message: "user does not exist" });
-      }
-
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-          return res.status(401).json({ message: "invalid credentials" });
-      }
-      const token = jwt.sign({ id: user.email }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
-      });
-      res.status(200).json({ message: "login successful", token, user });
-    } catch (err) {
-      return res.status(500).json({ message: "error finding user" });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "invalid credentials" });
     }
-  });
+    const token = jwt.sign({ id: user.email }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    res.status(200).json({ message: "login successful", token, user });
+  } catch (err) {
+    return res.status(500).json({ message: "error finding user" });
+  }
+});
 
-app.post("/api/getuser", async (req,res)=>{
-
-})
+app.post("/api/getuser", async (req, res) => {});
 
 //create trip
 app.post("/api/trip", authenticateJWT, async (req, res) => {
-    const { email, flights, hotels, startDate, endDate, tripName } = req.body;
-    try {
-        const newTrip = new Trip({ email, flights, hotels, startDate, endDate, tripName });
-        await newTrip.save();
-        return res.status(201).json({ message: "trip created successfully", trip: newTrip });
-    } catch (error) {
-        return res.status(500).json({ message: "error creating trip" });
-    }
-}) // works
+  const { email, flights, hotels, startDate, endDate, tripName } = req.body;
+  try {
+    const newTrip = new Trip({
+      email,
+      flights,
+      hotels,
+      startDate,
+      endDate,
+      tripName,
+    });
+    await newTrip.save();
+    return res
+      .status(201)
+      .json({ message: "trip created successfully", trip: newTrip });
+  } catch (error) {
+    return res.status(500).json({ message: "error creating trip" });
+  }
+}); // works
 
 //get trip
 
-app.post("/api/gettrips",authenticateJWT, async (req, res) => {
-    const { email } = req.body;
-    try {
-        const trips = await Trip.find({ email });
-        res.status(200).json({ trips });
-    } catch (error) {
-        return res.status(500).json({ message: "error getting trips" });
-    }
-}) // works
+app.post("/api/gettrips", authenticateJWT, async (req, res) => {
+  const { email } = req.body;
+  try {
+    const trips = await Trip.find({ email });
+    res.status(200).json({ trips });
+  } catch (error) {
+    return res.status(500).json({ message: "error getting trips" });
+  }
+}); // works
 
 //add flight to trip
 //currently adds a whole flight schema to the trip, could be just a foreign key?
 app.post("/api/addflight", authenticateJWT, async (req, res) => {
-    const { email, tripName, flight } = req.body;
-    try {
-        const newFlight = new Flight(flight);
-        const updatedTrip = await Trip.findOneAndUpdate(
-            { email, tripName },
-            { $push: { flights: newFlight } },
-            { new: true }
-        );
-        return res.status(200).json({ message: "flight added successfully", trip: updatedTrip});
-    } catch (error) {
-        return res.status(500).json({ message: "error adding flight" });      
-    }
-})
+  const { email, tripName, flight } = req.body;
+  try {
+    const newFlight = new Flight(flight);
+    const updatedTrip = await Trip.findOneAndUpdate(
+      { email, tripName },
+      { $push: { flights: newFlight } },
+      { new: true }
+    );
+    return res
+      .status(200)
+      .json({ message: "flight added successfully", trip: updatedTrip });
+  } catch (error) {
+    return res.status(500).json({ message: "error adding flight" });
+  }
+});
 //delete flight from trip
 app.post("/api/deleteflight", authenticateJWT, async (req, res) => {
-    const {email, tripName, flight} = req.body;
-    try {
-        const updatedTrip = await Trip.findOneAndUpdate
-        (
-            { email, tripName },
-            { $pull: { flights: flight } },
-            { new: true }
-        );
-        return res.status(200).json({ message: "flight deleted successfully", trip: updatedTrip });
-    } catch (error) {
-        return res.status(500).json({ message: "error deleting flight" });
-    }
-})
+  const { email, tripName, flight } = req.body;
+  try {
+    const updatedTrip = await Trip.findOneAndUpdate(
+      { email, tripName },
+      { $pull: { flights: flight } },
+      { new: true }
+    );
+    return res
+      .status(200)
+      .json({ message: "flight deleted successfully", trip: updatedTrip });
+  } catch (error) {
+    return res.status(500).json({ message: "error deleting flight" });
+  }
+});
 //add hotel to trip
-app.post("/api/addhotel",authenticateJWT, async (req, res) => {
-    const {email, tripName, hotel} = req.body;
-    try{
-        const newHotel = new Hotel(hotel);
-        const updatedTrip = await Trip.findOneAndUpdate(
-            { email, tripName },
-            { $push: { hotels: newHotel } },
-            { new: true }
-        );
-        return res.status(200).json({ message: "hotel added successfully", trip: updatedTrip });
-    }catch(error){
-        return res.status(500).json({ message: "error adding hotel" });
-    }
-})
+app.post("/api/addhotel", authenticateJWT, async (req, res) => {
+  const { email, tripName, hotel } = req.body;
+  try {
+    const newHotel = new Hotel(hotel);
+    const updatedTrip = await Trip.findOneAndUpdate(
+      { email, tripName },
+      { $push: { hotels: newHotel } },
+      { new: true }
+    );
+    return res
+      .status(200)
+      .json({ message: "hotel added successfully", trip: updatedTrip });
+  } catch (error) {
+    return res.status(500).json({ message: "error adding hotel" });
+  }
+});
 //delete hotel from trip
-app.post("/api/deletehotel",authenticateJWT, async (req, res) => {
-    const {email, tripName, hotel} = req.body;
-    try{
-        const updatedTrip = await Trip.findOneAndUpdate(
-            { email, tripName },
-            { $pull: { hotels: hotel } },
-            { new: true }
-        );
-        return res.status(200).json({ message: "hotel deleted successfully", trip: updatedTrip });
-    }catch(error){
-        return res.status(500).json({ message: "error deleting hotel" });
-    }
-})
+app.post("/api/deletehotel", authenticateJWT, async (req, res) => {
+  const { email, tripName, hotel } = req.body;
+  try {
+    const updatedTrip = await Trip.findOneAndUpdate(
+      { email, tripName },
+      { $pull: { hotels: hotel } },
+      { new: true }
+    );
+    return res
+      .status(200)
+      .json({ message: "hotel deleted successfully", trip: updatedTrip });
+  } catch (error) {
+    return res.status(500).json({ message: "error deleting hotel" });
+  }
+});
 
-//create a new flight
-app.post("/api/createflight",authenticateJWT, async (req, res) => {
-    const {departure, departureDate, departureTime, arrival, arrivalDate, arrivalTime, price, currency} = req.body;
-    try{
-        const newFlight = new Flight({ departure, departureDate, departureTime, arrival, arrivalDate, arrivalTime, price, currency });
-        await newFlight.save();
-        return res.status(201).json({ message: "flight created successfully", flight: newFlight });
-    }catch(error){
-        return res.status(500).json({ message: "error creating flight" });
-    }
-})
+app.get("/", (req, res) => {
+  res.send("root path");
+});
 
-//create a new hotel
-app.post("/api/createhotel",authenticateJWT, async (req, res) => {
-    const {name, city, latitude, longitude, distance} = req.body;
-    try{
-        const newHotel = new Hotel({ name, city, latitude, longitude, distance });
-        await newHotel.save();
-        return res.status(201).json({ message: "hotel created successfully", hotel: newHotel });
-    }catch(error){
-        return res.status(500).json({ message: "error creating hotel" });
-    }
-})
-
-  
-  app.get("/", (req, res) => {
-    res.send("root path");
-  });
-  
-  app.listen(PORT, () => console.log(`server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`server running on port ${PORT}`));
