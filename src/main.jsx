@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store/store.js";
+import ProtectedRoute from "./components/util/ProtectedRoute.jsx";
 
 import HomePage from "./pages/HomePage.jsx";
 import HotelsPage from "./pages/HotelsPage.jsx";
@@ -31,8 +32,11 @@ createRoot(document.getElementById("root")).render(
             <Route path="*" element={<NotFoundPage />} />
             <Route path="login" element={<LoginForm />} />
             <Route path="signup" element={<SignupForm />} />
-            {/* Protected Routes still to be added */}
-            <Route path="account" element={<AccountPage/>} />
+            <Route path='account' element={
+              <ProtectedRoute>
+                <AccountPage/>
+              </ProtectedRoute>
+            }/>
           </Route>
         </Routes>
       </BrowserRouter>

@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../store/slices/authSlice"
 
 import MaterialSymbolsTravelExplore from "../../assets/material-symbols_travel-explore.svg";
 
@@ -52,6 +53,11 @@ const Navigation = () => {
             <NavLink to="/account">
               <button className="bg-black text-white px-4 py-2 rounded">
                 Account
+              </button>
+            </NavLink>
+            <NavLink to="/">
+              <button className="bg-black text-white px-4 py-2 rounded" onClick={logoutHandler}>
+                Logout
               </button>
             </NavLink>
           </div>
