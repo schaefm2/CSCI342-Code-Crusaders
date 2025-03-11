@@ -63,7 +63,7 @@ const tripSchema = new mongoose.Schema({
 
 //
 const authenticateJWT = (req, res, next) => {
-    const token = req.header("Authorization")?.split(" ")[1];
+    /*const token = req.header("Authorization")?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ message: "unauthorized" });
     }
@@ -74,8 +74,9 @@ const authenticateJWT = (req, res, next) => {
         }
         req.user = user;
         next();
-    });
-}
+    });*/
+    next();
+} //COMMENTED OUT TO TEST WITHOUT AUTHENTICATION
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -160,7 +161,7 @@ app.post("/api/trip", authenticateJWT, async (req, res) => {
     } catch (error) {
         return res.status(500).json({ message: "error creating trip" });
     }
-})
+}) // works
 
 //get trip
 
@@ -172,15 +173,17 @@ app.post("/api/gettrips",authenticateJWT, async (req, res) => {
     } catch (error) {
         return res.status(500).json({ message: "error getting trips" });
     }
-})
+}) // works
 
 //add flight to trip
+//currently adds a whole flight schema to the trip, could be just a foreign key?
 app.post("/api/addflight", authenticateJWT, async (req, res) => {
     const { email, tripName, flight } = req.body;
     try {
+        const newFlight = new Flight(flight);
         const updatedTrip = await Trip.findOneAndUpdate(
             { email, tripName },
-            { $push: { flights: flight } },
+            { $push: { flights: newFlight } },
             { new: true }
         );
         return res.status(200).json({ message: "flight added successfully", trip: updatedTrip});
@@ -207,9 +210,10 @@ app.post("/api/deleteflight", authenticateJWT, async (req, res) => {
 app.post("/api/addhotel",authenticateJWT, async (req, res) => {
     const {email, tripName, hotel} = req.body;
     try{
+        const newHotel = new Hotel(hotel);
         const updatedTrip = await Trip.findOneAndUpdate(
             { email, tripName },
-            { $push: { hotels: hotel } },
+            { $push: { hotels: newHotel } },
             { new: true }
         );
         return res.status(200).json({ message: "hotel added successfully", trip: updatedTrip });
