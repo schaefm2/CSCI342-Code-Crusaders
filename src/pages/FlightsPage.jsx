@@ -21,11 +21,13 @@ const FlightsPage = () => {
   const [currencyCodeState, setCurrencyCode] = useState('USD');
 
   const [flights, setFlights] = useState([]);
+  const [filteredFlights, setFilteredFlights] = useState([]);
   const [error, setError] = useState(null);
 
   const originRef = useRef();
   const destinationRef = useRef();
   const [sortOrder, setSortOrder] = useState("asc");
+  const [directMatch, setDirectMatch] = useState(false); // State for direct match filter
 
 
   // Format to 'YYYY-MM-DD' but not needed if doing it directly in useStates
@@ -33,9 +35,13 @@ const FlightsPage = () => {
   // const formattedReturnDate = returnDateState.toISOString().split('T')[0]; 
 
   const sortFlightsByPrice = (flights, order) => {
-    return flights.sort((a, b) => {
-      const priceA = a.price.base;
-      const priceB = b.price.base;
+    const flightsCopy = [...flights];
+
+    // use a shallow copy and then sort it based on price
+    return flightsCopy.sort((a, b) => {
+      const priceA = Number(a.price.base);  
+      const priceB = Number(b.price.base);  
+
       if (order === "asc") {
         return priceA - priceB;
       } else {
@@ -44,19 +50,40 @@ const FlightsPage = () => {
     });
   };
 
+
+  // this is used if the checkbox is selected so that only flights from selected airports are shown
+  const filterFlightsByDirectMatch = (flights) => {
+    return flights.filter(flight => {
+      const departureAirport = flight.itineraries[0].segments[0].departure.iataCode;
+      const arrivalAirport = flight.itineraries[0].segments[0].arrival.iataCode;
+      return departureAirport === originState && arrivalAirport === destinationState;
+    });
+  };
+
+
   // Apply sorting whenever flights or sortOrder changes
   useEffect(() => {
     if (flights.length > 0) {
-      const sortedFlights = sortFlightsByPrice([...flights], sortOrder);  // ... allows shallow copy for reapplying flights after sorted
-      setFlights(sortedFlights);
-    }
-  }, [sortOrder]); // Reapply sorting whenever flights or sortOrder changes (based on sort dropdown)
+      let filteredFlights = flights;
 
-  const handleSortChange = (event) => {
-    const selectedOrder = event.target.value;
-    setSortOrder(selectedOrder);
-    const sortedFlights = sortFlights([...flights], selectedOrder);
-    setFlights(sortedFlights);
+      // If direct match filter is enabled, filter flights
+      if (directMatch) {
+        filteredFlights = filterFlightsByDirectMatch(filteredFlights);
+      }
+
+      // Sort the flights by price (ascending or descending)
+      const sortedFlights = sortFlightsByPrice(filteredFlights, sortOrder);
+      setFilteredFlights(sortedFlights);
+    }
+  }, [sortOrder, directMatch, flights]); // Reapply sorting whenever sortOrder, directMatch, or flights is changed
+  // This eans whenever the search button is pressed, dropdown option is changed, or checkbox selected
+
+  const handleSortOrderChange = (event) => {
+    setSortOrder(event.target.value);
+  };
+
+  const handleDirectMatchToggle = () => {
+    setDirectMatch(!directMatch);
   };
 
   const renderArrow = () => {
@@ -131,6 +158,7 @@ const FlightsPage = () => {
     });
     console.log(flights);
 
+    // setFilteredFlights(flights);
 
     // setOrigin(originAirport);
     // setDestination(destinationAirport);
@@ -179,22 +207,37 @@ const FlightsPage = () => {
         Search Flights
       </button>
 
-        {/* Adds a filter dropdown with filter options for the flights */}
+      {/* Adds a filter dropdown with filter options for the flights */} 
+      {/* Direct Match Checkbox */}
       <div className="mt-6">
-        <label htmlFor="sort" className="mr-4 text-lg">Sort by Price:</label>
-        <select 
-          id="sort" 
-          value={sortOrder}
-          onChange={handleSortChange}
-          className="p-2 border rounded-full">
+        <label htmlFor="directMatch" className="mr-4 text-lg">
+          Direct Airport Match:
+        </label>
+        <input
+          type="checkbox"
+          id="directMatch"
+          checked={directMatch}
+          onChange={handleDirectMatchToggle}
+          className="ml-2"
+        />
+      </div>
 
+      {/* Sorting by Price Dropdown */}
+      <div className="mt-6">
+        <label htmlFor="sortOrder" className="mr-4 text-lg">Sort by Price:</label>
+        <select
+          id="sortOrder"
+          value={sortOrder}
+          onChange={handleSortOrderChange}
+          className="p-2 border rounded-full"
+        >
           <option value="asc">Price: Low to High</option>
           <option value="desc">Price: High to Low</option>
         </select>
       </div>
 
       <div className="w-full mt-10">
-        {flights.map((flight, index) => {
+        {filteredFlights.map((flight, index) => {
           const departureAirport = flight.itineraries[0].segments[0].departure.iataCode;
           const departureTime = flight.itineraries[0].segments[0].departure.at;
           const arrivalAirport = flight.itineraries[0].segments[0].arrival.iataCode;
