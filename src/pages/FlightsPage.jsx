@@ -76,7 +76,7 @@ const FlightsPage = () => {
       setFilteredFlights(sortedFlights);
     }
   }, [sortOrder, directMatch, flights]); // Reapply sorting whenever sortOrder, directMatch, or flights is changed
-  // This eans whenever the search button is pressed, dropdown option is changed, or checkbox selected
+  // This happens whenever the search button is pressed, dropdown option is changed, or checkbox selected
 
   const handleSortOrderChange = (event) => {
     setSortOrder(event.target.value);
@@ -273,7 +273,7 @@ const FlightsPage = () => {
             <div key={index} className="flex flex-col items-center bg-white shadow-lg rounded-lg mb-6 p-6">
               <div className="w-full flex justify-between items-center">
                 <div className="text-xl font-semibold">{departureAirport} to {arrivalAirport}</div>
-                <div className="text-lg font-semibold">{flight.price.base} {flight.price.currency}</div>
+                <div className="text-lg font-semibold">{flight.price.base}       {flight.price.currency}</div>
               </div>
               <div className="w-full mt-2 flex justify-between">
                 <div className="text-sm">Departure: {new Date(departureTime).toLocaleString()}</div>
