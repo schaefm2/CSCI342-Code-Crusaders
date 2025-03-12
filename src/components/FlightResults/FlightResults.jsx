@@ -28,15 +28,9 @@ const FlightResults = () => {
     }
 
     // Check if all states are set
-    if (
-      originState &&
-      destinationState &&
-      departureDateState &&
-      returnDateState &&
-      adultsState &&
-      maxPriceState &&
-      currencyCodeState
-    ) {
+    if (originState && destinationState && departureDateState && returnDateState &&
+      adultsState && maxPriceState && currencyCodeState) {
+
       console.log("State values before calling flightSearch:");
       console.log("Origin:", originState);
       console.log("Destination:", destinationState);
