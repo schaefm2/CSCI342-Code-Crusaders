@@ -227,13 +227,31 @@ const FlightsPage = () => {
           </div>
         )}
 
+        {/* Uses an input spinner to only allow users to set the number from 1-9 */}
+        <div className="flex flex-col items-center p-4">
+          <label className="mb-2 text-lg font-semibold">Number of Tickets</label>
+          <input
+            type="number"
+            min="1"
+            max="9"
+            value={adultsState}
+            onChange={(e) => {
+              // Ensure the value is numeric and within the range to prevent errors from occuring
+              const newValue = e.target.value;
+              if (newValue >= 1 && newValue <= 9 && !isNaN(newValue)) {
+                setAdults(newValue);
+              }
+            }}
+            className="w-full p-2 rounded-full border"
+          />
+        </div>
+
       </div>
 
       <button className="bg-black text-white" onClick={handleSearch}>
         Search Flights
       </button>
 
-      {/* Adds a filter dropdown with filter options for the flights */} 
       {/* Direct Match Checkbox */}
       <div className="mt-6">
         <label htmlFor="directMatch" className="mr-4 text-lg">
@@ -248,7 +266,7 @@ const FlightsPage = () => {
         />
       </div>
 
-      {/* Sorting by Price Dropdown */}
+      {/* Sorting by Price Dropdown menu */}
       <div className="mt-6">
         <label htmlFor="sortOrder" className="mr-4 text-lg">Sort by Price:</label>
         <select
