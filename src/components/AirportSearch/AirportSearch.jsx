@@ -33,7 +33,7 @@ const AirportSearch = React.forwardRef(({ placeholder }, ref) => {
     <div className="relative">
       <input
         ref={ref}
-        className="w-50 h-15 text-lg px-2"
+        className="w-50 h-15 text-lg px-2 bg-gray-100 rounded-md"
         type="text"
         placeholder={placeholder}
         value={query}
