@@ -16,9 +16,10 @@ const FlightsPage = () => {
   const [destinationState, setDestination] = useState('');
   const [departureDateState, setDepartureDate] = useState(new Date('2025-01-02'));
   const [returnDateState, setReturnDate] = useState(new Date('2025-01-03'));
-  const [adultsState, setAdults] = useState('2');
+  const [adultsState, setAdults] = useState('1');
   const [maxPriceState, setMaxPrice] = useState('499');
   const [currencyCodeState, setCurrencyCode] = useState('USD');
+  const [currencySymbol, setCurrencySymbol] = useState('$')
 
   const [flights, setFlights] = useState([]);
   const [filteredFlights, setFilteredFlights] = useState([]);
@@ -291,7 +292,7 @@ const FlightsPage = () => {
             <div key={index} className="flex flex-col items-center bg-white shadow-lg rounded-lg mb-6 p-6">
               <div className="w-full flex justify-between items-center">
                 <div className="text-xl font-semibold">{departureAirport} to {arrivalAirport}</div>
-                <div className="text-lg font-semibold">{flight.price.base}       {flight.price.currency}</div>
+                <div className="text-lg font-semibold">{currencySymbol}{flight.price.base}       {flight.price.currency}</div>
               </div>
               <div className="w-full mt-2 flex justify-between">
                 <div className="text-sm">Departure: {new Date(departureTime).toLocaleString()}</div>
