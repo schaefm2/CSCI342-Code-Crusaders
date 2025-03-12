@@ -1,6 +1,7 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
+  /*max-width: 1280px;*/
+  width: 100%;
+  min-height: 100vh; /* Ensure the root takes up at least the full viewport height */
   padding: 2rem;
   text-align: center;
 }

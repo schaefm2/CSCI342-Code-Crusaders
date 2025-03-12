@@ -19,6 +19,7 @@ import SignupForm from "./components/Forms/SignupForm.jsx";
 import AccountPage from "./components/Account/Account.jsx";
 import ItenView from "./components/Itinerary/ItenView.jsx";
 
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>

@@ -11,6 +11,7 @@ import AmadeusAPITokenCreation from "./components/FlightData/AmadeusAPITokenCrea
 import FlightData from "./components/FlightData/FlightData.jsx";
 import fetchAccessToken from "./components/FlightData/AmadeusAPITokenCreation.jsx";
 import HotelData from "./components/Hotels/HotelData.jsx";
+import Footer from "./components/Footer/Footer.jsx";
 
 import { AccessTokenProvider } from "./components/AccessTokenContext/AccessTokenContext.jsx";
 
@@ -105,17 +106,13 @@ function App() {
   return (
     <ColorThemeProvider>
       <AccessTokenProvider>
-        <div className="flex flex-col ">
-          {/*<h1>Flight Data</h1>* no idea why this is here/}
-
-          {/* TODO: Uncommenting below gets token and allows flight access*/}
-
-          {/* {renderFlightDataOrLoading()} */}
-          {/* {renderHotelDataOrLoading()} */}
-
+        <div className="flex flex-col min-h-screen w-full"> {/* Ensure full height */}
           <Navigation />
-          <Outlet />
+          <main className="flex-1 pt-16"> {/* Grow to push footer down */}
+            <Outlet />
+          </main>
           <Toaster />
+          <Footer />
         </div>
       </AccessTokenProvider>
     </ColorThemeProvider>
