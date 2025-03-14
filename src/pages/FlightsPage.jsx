@@ -126,6 +126,7 @@ const FlightsPage = () => {
     }
 
     setLoadingSearch(true);
+    setError(null);
 
     
     // if (oneWay) {  // if one way send nothing for return date
@@ -167,7 +168,14 @@ const FlightsPage = () => {
       setFlights,
       setError,
       oneWay
-    }).finally(() => {
+    })
+
+    .catch((err) => {
+      setError("Please enter valid airport codes or cities for both destinations");
+      console.log(err);
+    })
+
+    .finally(() => {
       setLoadingSearch(false);
     });
 
@@ -185,6 +193,14 @@ const FlightsPage = () => {
   
   return (
     <div className="flex flex-col items-center mt-10">
+
+      {/* Show error message if there is an error during handling search*/}
+      {error && (
+        <div className="text-red-500 mb-4 font-semibold">
+          {"Search failed, please enter two valid airport codes or cities from the auto complete options and dates that are in the future"}
+        </div>
+      )}
+
       <div className="flex flex-row items-center justify-center">
         
         <div className="relative">
