@@ -31,6 +31,7 @@ const FlightsPage = () => {
   const [directMatch, setDirectMatch] = useState(true);
   const [loadingSearch, setLoadingSearch] = useState(false);
 
+  const [searchPerformed, setSearchPerformed] = useState(false);
 
 
   // Format to 'YYYY-MM-DD' but not needed if doing it directly in useStates
@@ -127,6 +128,11 @@ const FlightsPage = () => {
 
     setLoadingSearch(true);
     setError(null);
+    setSearchPerformed(true);
+
+    // Reset flights and filteredFlights to empty arrays before performing a new search so old results dont stay
+    setFlights([]);
+    setFilteredFlights([]);
 
     
     // if (oneWay) {  // if one way send nothing for return date
@@ -311,30 +317,35 @@ const FlightsPage = () => {
       </div>
 
       <div className="w-full mt-10 flex justify-center">
-  <div className="w-1/2"> {/* This limits the width to 50% of the parent container */}
-    {filteredFlights.map((flight, index) => {
-      const departureAirport = flight.itineraries[0].segments[0].departure.iataCode;
-      const departureTime = flight.itineraries[0].segments[0].departure.at;
-      const arrivalAirport = flight.itineraries[0].segments[0].arrival.iataCode;
-      const arrivalTime = flight.itineraries[0].segments[0].arrival.at;
+        <div className="w-1/2">
+          {searchPerformed && !loadingSearch && error===null && filteredFlights.length === 0 ? (
+            <div className="text-center text-red-500 font-semibold">
+              No available flights on specified days and airports.
+            </div>
+          ) : (
+            filteredFlights.map((flight, index) => {
+              const departureAirport = flight.itineraries[0].segments[0].departure.iataCode;
+              const departureTime = flight.itineraries[0].segments[0].departure.at;
+              const arrivalAirport = flight.itineraries[0].segments[0].arrival.iataCode;
+              const arrivalTime = flight.itineraries[0].segments[0].arrival.at;
 
-      return (
-        <div key={index} className="flex flex-col items-center bg-white shadow-lg rounded-lg mb-6 p-6">
-          <div className="w-full flex justify-between items-center">
-            <div className="text-xl font-semibold">{departureAirport} to {arrivalAirport}</div>
-            <div className="text-lg font-semibold">{currencySymbol}{flight.price.base} {flight.price.currency}</div>
-          </div>
-          <div className="w-full mt-2 flex justify-between">
-            <div className="text-sm">Departure: {new Date(departureTime).toLocaleString()}</div>
-            <div className="text-sm">Arrival: {new Date(arrivalTime).toLocaleString()}</div>
-          </div>
-          <button className="bg-black text-white p-2 rounded-full mt-4">Add</button>
+              return (
+                <div key={index} className="flex flex-col items-center bg-white shadow-lg rounded-lg mb-6 p-6">
+                  <div className="w-full flex justify-between items-center">
+                    <div className="text-xl font-semibold">{departureAirport} to {arrivalAirport}</div>
+                    <div className="text-lg font-semibold">{currencySymbol}{flight.price.base} {flight.price.currency}</div>
+                  </div>
+                  <div className="w-full mt-2 flex justify-between">
+                    <div className="text-sm">Departure: {new Date(departureTime).toLocaleString()}</div>
+                    <div className="text-sm">Arrival: {new Date(arrivalTime).toLocaleString()}</div>
+                  </div>
+                  <button className="bg-black text-white p-2 rounded-full mt-4">Add</button>
+                </div>
+              );
+            })
+          )}
         </div>
-        );
-      })}
       </div>
-    </div>
-
     </div>
   );
 };
