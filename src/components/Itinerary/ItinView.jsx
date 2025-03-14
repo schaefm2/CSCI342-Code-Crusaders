@@ -1,74 +1,11 @@
-import React, { useState } from "react";
-// const itenerary = {
-//   title: "My trip",
-//   startDate: "3/01/2025",
-//   endDate: "3/03/2025",
-//   dayInfo: [
-//     {
-//       location: "Seattle",
-//       date: "3/01/2025",
-//       activities: [
-//         {
-//           name: "Check In",
-//           time: "9:00am",
-//           address: "",
-//           description: "",
-//         },
-//         {
-//           name: "Biking",
-//           time: "12:00pm",
-//           description: "Go biking from here to there",
-//           address: "",
-//         },
-//         {
-//           name: "Tour Thing",
-//           time: "3:00pm",
-//           address: "",
-//           description: "Tour this place",
-//         },
-//       ],
-//     },
-//     {
-//       location: "Seattle",
-//       date: "3/02/2025",
-//       activities: [
-//         {
-//           name: "Check In",
-//           time: "9:00am",
-//           address: "",
-//           description: "",
-//         },
-//         {
-//           name: "Biking",
-//           time: "12:00pm",
-//           description: "Go biking from here to there",
-//           address: "",
-//         },
-//         {
-//           name: "Tour Thing",
-//           time: "3:00pm",
-//           address: "",
-//           description: "Tour this place",
-//         },
-//       ],
-//     },
-//     {
-//       location: "Seattle",
-//       date: "3/01/2025",
-//       activities: [
-//         {
-//           name: "Check Out",
-//           time: "9:00am",
-//           address: "this is an address",
-//           description: "Check out of this hotel",
-//         },
-//       ],
-//     },
-//   ],
-// };
+import React, { useState, useEffect } from "react";
 
-const ItenView = ({ itenerary }) => {
-  const [itineraryData, setItineraryData] = useState(itenerary);
+const ItinView = ({ itinerary }) => {
+  const [itineraryData, setItineraryData] = useState(itinerary);
+
+  useEffect(() => {
+    setItineraryData(itinerary);
+  }, [itinerary]);
 
   const handleEdit = (dayIndex, activityIndex) => {
     const newActivityName = prompt("Enter new activity name:");
@@ -98,10 +35,6 @@ const ItenView = ({ itenerary }) => {
     });
 
     setItineraryData({ ...itineraryData, dayInfo: updatedDayInfo });
-    console.log(`Edit Day ${dayIndex + 1}, Activity ${activityIndex + 1}`);
-
-    setItineraryData({ ...itineraryData, dayInfo: updatedDayInfo });
-    console.log(`Edit Day ${dayIndex + 1}, Activity ${activityIndex + 1}`);
   };
 
   const handleDelete = (dayIndex, activityIndex) => {
@@ -200,4 +133,4 @@ const ItenView = ({ itenerary }) => {
   );
 };
 
-export default ItenView;
+export default ItinView;

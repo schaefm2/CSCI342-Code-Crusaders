@@ -17,8 +17,6 @@ import NotFoundPage from "./pages/NotFoundPage.jsx";
 import LoginForm from "./components/Forms/LoginForm.jsx";
 import SignupForm from "./components/Forms/SignupForm.jsx";
 import AccountPage from "./components/Account/Account.jsx";
-import ItenView from "./components/Itinerary/ItenView.jsx";
-
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -36,7 +34,7 @@ createRoot(document.getElementById("root")).render(
             <Route path="signup" element={<SignupForm />} />
             {/* Protected Routes still to be added */}
             <Route path="account" element={<AccountPage />} />
-            <Route path="test" element={<ItenView />} />
+
             <Route
               path="account"
               element={
