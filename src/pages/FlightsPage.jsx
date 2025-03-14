@@ -196,6 +196,13 @@ const FlightsPage = () => {
     return null;
   };
 
+  const handleAddFlight = (flight) => {
+    // TODO: Add rest of logic here to add to itinerary
+    console.log('Flight added by add button:', flight);
+  
+  };
+  
+
   
   return (
     <div className="flex flex-col items-center mt-10">
@@ -339,7 +346,10 @@ const FlightsPage = () => {
                     <div className="text-sm">Departure: {new Date(departureTime).toLocaleString()}</div>
                     <div className="text-sm">Arrival: {new Date(arrivalTime).toLocaleString()}</div>
                   </div>
-                  <button className="bg-black text-white p-2 rounded-full mt-4">Add</button>
+                  <button className="bg-black text-white p-2 rounded-full mt-4" 
+                  onClick={() => handleAddFlight(flight)}>
+                    Add
+                  </button>
                 </div>
               );
             })
