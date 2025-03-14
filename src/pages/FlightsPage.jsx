@@ -28,7 +28,9 @@ const FlightsPage = () => {
   const originRef = useRef();
   const destinationRef = useRef();
   const [sortOrder, setSortOrder] = useState("asc");
-  const [directMatch, setDirectMatch] = useState(false); // State for direct match filter
+  const [directMatch, setDirectMatch] = useState(true);
+  const [loadingSearch, setLoadingSearch] = useState(false);
+
 
 
   // Format to 'YYYY-MM-DD' but not needed if doing it directly in useStates
@@ -123,6 +125,8 @@ const FlightsPage = () => {
       return;
     }
 
+    setLoadingSearch(true);
+
     
     // if (oneWay) {  // if one way send nothing for return date
     //   console.log("One way detected in handleSearch, setting returnDate to empty")
@@ -163,6 +167,8 @@ const FlightsPage = () => {
       setFlights,
       setError,
       oneWay
+    }).finally(() => {
+      setLoadingSearch(false);
     });
 
     console.log(flights);
@@ -249,9 +255,16 @@ const FlightsPage = () => {
 
       </div>
 
-      <button className="bg-black text-white" onClick={handleSearch}>
-        Search Flights
-      </button>
+      <div className="flex items-center justify-center">
+        <button className="bg-black text-white p-2 rounded-full" onClick={handleSearch}>
+          Search Flights
+        </button>
+
+        {/* Render the loading spinner next to the button instead of inside of it*/}
+        {loadingSearch && (
+          <div className="ml-2 w-4 h-4 border-4 border-t-transparent border-solid border-black rounded-full animate-spin"></div>
+        )}
+      </div>
 
       {/* Direct Match Checkbox */}
       <div className="mt-6">
@@ -281,28 +294,31 @@ const FlightsPage = () => {
         </select>
       </div>
 
-      <div className="w-full mt-10">
-        {filteredFlights.map((flight, index) => {
-          const departureAirport = flight.itineraries[0].segments[0].departure.iataCode;
-          const departureTime = flight.itineraries[0].segments[0].departure.at;
-          const arrivalAirport = flight.itineraries[0].segments[0].arrival.iataCode;
-          const arrivalTime = flight.itineraries[0].segments[0].arrival.at;
+      <div className="w-full mt-10 flex justify-center">
+  <div className="w-1/2"> {/* This limits the width to 50% of the parent container */}
+    {filteredFlights.map((flight, index) => {
+      const departureAirport = flight.itineraries[0].segments[0].departure.iataCode;
+      const departureTime = flight.itineraries[0].segments[0].departure.at;
+      const arrivalAirport = flight.itineraries[0].segments[0].arrival.iataCode;
+      const arrivalTime = flight.itineraries[0].segments[0].arrival.at;
 
-          return (
-            <div key={index} className="flex flex-col items-center bg-white shadow-lg rounded-lg mb-6 p-6">
-              <div className="w-full flex justify-between items-center">
-                <div className="text-xl font-semibold">{departureAirport} to {arrivalAirport}</div>
-                <div className="text-lg font-semibold">{currencySymbol}{flight.price.base}       {flight.price.currency}</div>
-              </div>
-              <div className="w-full mt-2 flex justify-between">
-                <div className="text-sm">Departure: {new Date(departureTime).toLocaleString()}</div>
-                <div className="text-sm">Arrival: {new Date(arrivalTime).toLocaleString()}</div>
-              </div>
-              <button className="bg-black text-white p-2 rounded-full mt-4">Add</button>
-            </div>
-          );
-        })}
+      return (
+        <div key={index} className="flex flex-col items-center bg-white shadow-lg rounded-lg mb-6 p-6">
+          <div className="w-full flex justify-between items-center">
+            <div className="text-xl font-semibold">{departureAirport} to {arrivalAirport}</div>
+            <div className="text-lg font-semibold">{currencySymbol}{flight.price.base} {flight.price.currency}</div>
+          </div>
+          <div className="w-full mt-2 flex justify-between">
+            <div className="text-sm">Departure: {new Date(departureTime).toLocaleString()}</div>
+            <div className="text-sm">Arrival: {new Date(arrivalTime).toLocaleString()}</div>
+          </div>
+          <button className="bg-black text-white p-2 rounded-full mt-4">Add</button>
+        </div>
+        );
+      })}
       </div>
+    </div>
+
     </div>
   );
 };
