@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run dev\"",
+    "server": "nodemon server/server.js",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
@@ -16,6 +18,8 @@
     "@reduxjs/toolkit": "^2.6.1",
     "@tailwindcss/vite": "^4.0.5",
     "axios": "^1.8.2",
+    "concurrently": "^9.1.2",
+    "nodemon": "^3.1.9",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-datepicker": "^8.1.0",
