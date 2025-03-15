@@ -6,7 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store/store.js";
-import ProtectedRoute from "./components/util/ProtectedRoute.jsx";
+import ProtectedRoute from "./util/ProtectedRoute.jsx";
 
 import HomePage from "./pages/HomePage.jsx";
 import HotelsPage from "./pages/HotelsPage.jsx";
