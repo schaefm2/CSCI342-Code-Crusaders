@@ -62,9 +62,8 @@ const hotelSearch = async ({
     const data = await response.json();
 
     // console.log("Fetched hotels data:", data.data);
-
     setHotels(data.data); // Update state with the fetched hotels data
-    logHotelData(data.data); // Log hotel data to console
+    //logHotelData(data.data); // Log hotel data to console
   } catch (err) {
     setError(`Error: ${err.message}`);
     console.error(err);

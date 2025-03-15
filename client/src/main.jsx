@@ -17,6 +17,7 @@ import NotFoundPage from "./pages/NotFoundPage.jsx";
 import LoginForm from "./components/Forms/LoginForm.jsx";
 import SignupForm from "./components/Forms/SignupForm.jsx";
 import AccountPage from "./components/Account/Account.jsx";
+import HotelView from "./components/Hotel/HotelView.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -43,6 +44,7 @@ createRoot(document.getElementById("root")).render(
                 </ProtectedRoute>
               }
             />
+            <Route path="hotels/:id" element={<HotelView />} />
           </Route>
         </Routes>
       </BrowserRouter>

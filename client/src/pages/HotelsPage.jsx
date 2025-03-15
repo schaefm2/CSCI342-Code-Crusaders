@@ -1,42 +1,41 @@
 import React, { useState, useRef, useEffect } from "react";
 import HotelList from "../components/HotelList/HotelList";
 import Search from "../components/Search/Search";
-import { hotelSearch, getHotelSearchResults} from "../components/Hotels/HotelData";
+import {
+  hotelSearch,
+  getHotelSearchResults,
+} from "../components/Hotels/HotelData";
 import { useAccessToken } from "../components/AccessTokenContext/AccessTokenContext.jsx";
 
-
 const HotelsPage = () => {
-
   const { accessToken, loading } = useAccessToken();
 
   const [cityCodeState, setCityCode] = useState();
   const [radiusState, setRadius] = useState();
 
   const [hotels, setHotels] = useState([]);
-  const [filteredHotels, setFilteredHotels] = useState([]);  // copy for filtering without manipulating original result
+  const [filteredHotels, setFilteredHotels] = useState([]); // copy for filtering without manipulating original result
   const [minPrice, setMinPrice] = useState(100);
   const [maxPrice, setMaxPrice] = useState(400);
-
 
   const [error, setError] = useState(null);
   const [searchTriggered, setSearchTriggered] = useState(false);
   const [sortOrder, setSortOrder] = useState("asc"); // State for price sorting
 
-
-  const handleSearch = () =>{
+  const handleSearch = () => {
     if (!accessToken) {
       console.log("Failed to get access token");
       return;
     }
 
-    console.log('Calling HotelSearch from HotelsPage');
+    console.log("Calling HotelSearch from HotelsPage");
 
     hotelSearch({
       accessToken,
-      cityCode: 'SEA',
+      cityCode: "SEA",
       radius: 20,
       setHotels,
-      setError
+      setError,
     }).finally(() => {
       setSearchTriggered(true);
     });
@@ -58,7 +57,14 @@ const HotelsPage = () => {
 
         // Fetch more hotel information based on these IDs
         // getHotelSearchResults(trimmedHotelIds, accessToken, setError);
-        getHotelSearchResults(hotels, accessToken, minPrice, maxPrice, setFilteredHotels, setError);
+        getHotelSearchResults(
+          hotels,
+          accessToken,
+          minPrice,
+          maxPrice,
+          setFilteredHotels,
+          setError
+        );
 
         console.log("Filtered hotels inside hotelsPage: ", filteredHotels);
       }
@@ -66,14 +72,12 @@ const HotelsPage = () => {
   }, [hotels]);
 
   useEffect(() => {
-
     console.log("Updated filtered hotels:", filteredHotels);
-
   }, [filteredHotels]);
 
   // extracts all the ids from the hotels list
   const extractHotelIds = (hotels) => {
-    return hotels.map(hotel => hotel.hotelId);
+    return hotels.map((hotel) => hotel.hotelId);
   };
 
   const sortHotelsByPrice = (hotels, order) => {
@@ -81,8 +85,8 @@ const HotelsPage = () => {
 
     // use a shallow copy and then sort it based on price
     return hotelsCopy.sort((a, b) => {
-      const priceA = Number(a.price.base);  
-      const priceB = Number(b.price.base);  
+      const priceA = Number(a.price.base);
+      const priceB = Number(b.price.base);
 
       if (order === "asc") {
         return priceA - priceB;
@@ -120,7 +124,7 @@ const HotelsPage = () => {
           placeholder="Enter A City"
           onSelect={handleCitySelect}
         />
-  
+
         {/* Dropdown for price sorting */}
         <div className="mt-4 flex items-center">
           <div className="mr-4">
@@ -137,7 +141,7 @@ const HotelsPage = () => {
               <option value="desc">Price: High to Low</option>
             </select>
           </div>
-  
+
           <button
             className="bg-black text-white p-3 rounded-full"
             onClick={handleSearch}
@@ -151,10 +155,9 @@ const HotelsPage = () => {
           >
             Filter Hotels
           </button> */}
-
         </div>
       </div>
-  
+
       {/* Render sorted and filtered hotels */}
       <HotelList hotels={filteredHotels} />
     </div>

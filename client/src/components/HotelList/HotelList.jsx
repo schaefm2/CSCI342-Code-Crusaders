@@ -7,9 +7,13 @@ const HotelList = ({ hotels }) => {
     sethotelLIst(hotels);
   }, [hotels]);
   return (
-    <div className="flex flex-auto justify-between space-x-4">
+    <div className="flex flex-wrap gap-4">
       {hotelList.map((hotel, index) => {
-        return <Hotel key={index} hotel={hotel} className="m-2" />;
+        return (
+          <div key={index} className="flex-1 min-w-[calc(25%-16px)] box-border">
+            <Hotel hotel={hotel} />
+          </div>
+        );
       })}
     </div>
   );

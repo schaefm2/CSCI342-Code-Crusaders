@@ -1,26 +1,51 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import StarIcon from "../../assets/star.svg";
+import { Link } from "react-router-dom";
 
 const Hotel = ({ hotel }) => {
+  const [image, setImage] = useState(null);
+  // useEffect(() => {
+  //   if (hotel.hotel.name) {
+  //     const fetchImages = async () => {
+  //       try {
+  //         const response = await fetch(
+  //           `https://www.googleapis.com/customsearch/v1?q=${hotel.hotel.name}&cx=3671b3f45ec244689&searchType=image&key=AIzaSyDr1PZL1FtszKOJWE8ju-oN7nbAQtNFyWs`
+  //         );
+  //         const data = await response.json();
+  //         console.log(data);
+  //         setImage(data.items[0]);
+  //       } catch (error) {
+  //         console.error("Error fetching images:", error);
+  //       }
+  //     };
+
+  //     fetchImages();
+  //   }
+  // }, [hotel]);
+
   return (
-    <div className="w-80 shadow">
-      <img src={hotel.img}></img>
-      <div className="flex justify-between mt-2">
-        <ul className="p-2 font-semibold">{hotel.hotelName}</ul>
-        <ul className="p-2 font-bold">{hotel.location}</ul>
-      </div>
-      <div className="flex justify-between mt-2">
-        <p className="text-lg font-bold">${hotel.avgPrice}</p>
-        {Array.from({ length: hotel.rating }).map((_, index) => {
-          return (
-            <img
-              key={index}
-              src={StarIcon}
-              alt="Star rating"
-              className="w-6 h-6"
-            />
-          );
-        })}
+    <div className="w-80 h-35 shadow">
+      {/* {image && (
+        <img
+          src={image.link}
+          alt={hotel.hotel.name}
+          className="w-full h-40 object-cover"
+        />
+      )} */}
+      <div className="p-2">
+        <div className="flex justify-between mt-2">
+          <ul className="font-semibold">{hotel?.hotel?.name}</ul>
+        </div>
+        <div className="flex justify-between mt-2">
+          <p className="text-lg font-bold">${hotel.offers[0].price.base}</p>
+        </div>
+        <Link
+          to={`/hotels/${hotel.hotel.hotelId}`}
+          state={{ hotel }}
+          className="text-blue-500 underline mt-2 block"
+        >
+          View Details
+        </Link>
       </div>
     </div>
   );
