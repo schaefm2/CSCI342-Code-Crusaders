@@ -71,7 +71,7 @@ const logHotelData = (hotels) => {
     console.log("Start of getHotelSearchResults");
   
     try {
-      // Step 1: Get hotel IDs (take only the first 50 hotels for this example)
+      // Get hotel IDs (take only the first 50 hotels for this example)
       const hotelIds = hotels.slice(0, (hotels.length)).map((hotel) => hotel.hotelId);
       console.log("Hotel IDs to be processed:", hotelIds);
   
@@ -99,7 +99,7 @@ const logHotelData = (hotels) => {
           offerURL.searchParams.append(key, params[key])
         );
   
-        // Step 4: Fetch data for the current chunk
+        // Fetch data for the current chunk
         const response = await fetch(offerURL, {
           method: "GET",
           headers: {
@@ -118,11 +118,11 @@ const logHotelData = (hotels) => {
         const data = await response.json();
         console.log(`Fetched hotel details for chunk ${i + 1}:`, data);
   
-        // Step 5: Append the results of this batch to filteredHotels
+        // Append the results of this batch to filteredHotels
         filteredHotels = [...filteredHotels, ...data.data]; // Assuming 'data.data' contains the hotels
       }
   
-      // Step 6: Set the final filtered hotels after all batches are fetched
+      // Set the final filtered hotels after all batches are fetched
       setFilteredHotels(filteredHotels);
   
       console.log("Filtered hotels inside hotelData:", filteredHotels);
