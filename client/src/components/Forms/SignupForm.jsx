@@ -42,40 +42,36 @@ const SignupForm = () => {
     resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit = (data) => {
-    if(data.password !== data.confirmPassword){
-      toast.error("Passwords do not match")
+  const onSubmit = async (data) => {
+    if (data.password !== data.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
     }
-
-    try{
+    try {
       setIsLoading(true);
-  
-      fetch("http://localhost:3000/api/signup", {
+      const response = await fetch("http://localhost:3000/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      })
-      .then(response => {
-        if(response.ok){
-          toast.success("Signup successful. Please login.");
-          navigate("/login");
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        toast.error("An error occurred during signup.");
-      })
-    }
-    catch (error) {
-      console.error("Signup error: ", error);
-      toast.error("An error occurred during signup. Please try again.");
-    } 
-    finally {
+        body: JSON.stringify(data),
+      });
+
+      const json = await response.json();
+
+      if (!response.ok) {
+        throw new Error(json.message || "Something went wrong");
+      }
+
+      console.log("Signup data:", data);
+      //localStorage.setItem("user", JSON.stringify(data));
+      //dispatch(login(data));
+      toast.success("Signup successful. Please login");
+      navigate("/login");
+    } catch (error) {
+      console.error("Signup error:", error);
+      toast.error(error.message || "An error occured");
+    } finally {
       setIsLoading(false);
     }
-
-    //storing in console for testing purposes
-    console.log("Signup data: ", data);
   };
 
   useEffect(() => {
