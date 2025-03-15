@@ -4,8 +4,9 @@
   "main": "index.js",
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "nodemon server/server.js",
-    "client": "cd client && npm install && npm run dev"
+    "server":"cd server && npm install && nodemon server/server.js",
+    "client": "cd client && npm install && npm run dev",
+    "dev":"cd client && npm run dev"
   },
   "dependencies": {
     "acorn": "^8.14.0",
