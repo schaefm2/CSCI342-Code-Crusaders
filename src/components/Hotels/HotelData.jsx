@@ -67,47 +67,71 @@ const logHotelData = (hotels) => {
   // }));
     
   // searches api with all hotelids gotten from the search by the city
-  const getHotelSearchResults = async (hotels, accessToken, setError) => {
-
-    console.log("start of getHotelSearchResults");
-
+  const getHotelSearchResults = async (hotels, accessToken, setFilteredHotels, setError) => {
+    console.log("Start of getHotelSearchResults");
+  
     try {
-
-      const hotelIds = hotels.slice(0, 50).map((hotel) => hotel.hotelId)
-
-      console.log("hotelIds: ", hotelIds);
-
-      const offerURL = new URL("https://cors-anywhere.herokuapp.com/https://test.api.amadeus.com/v3/shopping/hotel-offers");
+      // Step 1: Get hotel IDs (take only the first 50 hotels for this example)
+      const hotelIds = hotels.slice(0, (hotels.length)).map((hotel) => hotel.hotelId);
+      console.log("Hotel IDs to be processed:", hotelIds);
   
-      const params = {
-        hotelIds: hotelIds  // Pass the hotel IDs as a comma-separated list
-      }
-
-      Object.keys(params).forEach((key) =>
-        offerURL.searchParams.append(key, params[key])
-      );
-
-      const response = await fetch(offerURL, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-  
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error response from hotel search by IDs:', errorText);
-        throw new Error(`Failed to fetch hotels by IDs from Amadeus API: ${errorText}`);
+      // Split the hotelIds array into chunks of 40
+      const chunkSize = 40;
+      const chunks = [];
+      for (let i = 0; i < hotelIds.length; i += chunkSize) {
+        chunks.push(hotelIds.slice(i, i + chunkSize));
       }
   
-      const data = await response.json();
-      console.log("Fetched hotel details by IDs:", data);
-      // Further handling of the data (e.g., set it to state) can be done here
+      let filteredHotels = [];
+  
+      for (let i = 0; i < chunks.length; i++) {
+        console.log(`Fetching details for chunk ${i + 1}...`);
+        
+        // Create the request URL for the current chunk of hotel IDs
+        const offerURL = new URL("https://cors-anywhere.herokuapp.com/https://test.api.amadeus.com/v3/shopping/hotel-offers");
+    
+        const params = {
+          hotelIds: chunks[i].join(","),  // Join the hotel IDs into a comma-separated list
+        };
+    
+        // Append the parameters to the URL
+        Object.keys(params).forEach((key) =>
+          offerURL.searchParams.append(key, params[key])
+        );
+  
+        // Step 4: Fetch data for the current chunk
+        const response = await fetch(offerURL, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+  
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Error response from hotel search by IDs:", errorText);
+          throw new Error(`Failed to fetch hotels by IDs from Amadeus API: ${errorText}`);
+        }
+  
+        // Parse the response and store the data
+        const data = await response.json();
+        console.log(`Fetched hotel details for chunk ${i + 1}:`, data);
+  
+        // Step 5: Append the results of this batch to filteredHotels
+        filteredHotels = [...filteredHotels, ...data.data]; // Assuming 'data.data' contains the hotels
+      }
+  
+      // Step 6: Set the final filtered hotels after all batches are fetched
+      setFilteredHotels(filteredHotels);
+  
+      console.log("Filtered hotels inside hotelData:", filteredHotels);
+  
     } catch (error) {
       setError(`Error: ${error.message}`);
       console.error("Error fetching hotel search results:", error);
     }
   };
+
   
   export { hotelSearch, getHotelSearchResults };

@@ -31,7 +31,7 @@ const HotelsPage = () => {
     hotelSearch({
       accessToken,
       cityCode: 'SEA',
-      radius: 10,
+      radius: 20,
       setHotels,
       setError
     }).finally(() => {
@@ -45,20 +45,28 @@ const HotelsPage = () => {
 
       if (hotels && hotels.length > 0) {
         // Extract hotelIds from the list of hotels
-        const hotelIds = extractHotelIds(hotels);
+        // const hotelIds = extractHotelIds(hotels);
 
-        console.log("hotelIds: ", hotelIds);
+        // console.log("hotelIds: ", hotelIds);
 
-        const trimmedHotelIds = hotelIds.slice(0, 10);
+        // const trimmedHotelIds = hotelIds.slice(0, 10);
 
-        console.log("hotelIds Trimmed: ", trimmedHotelIds);
+        // console.log("hotelIds Trimmed: ", trimmedHotelIds);
 
         // Fetch more hotel information based on these IDs
         // getHotelSearchResults(trimmedHotelIds, accessToken, setError);
-        getHotelSearchResults(hotels, accessToken, setError);
+        getHotelSearchResults(hotels, accessToken, setFilteredHotels, setError);
+
+        console.log("Filtered hotels inside hotelsPage: ", filteredHotels);
       }
     }
   }, [hotels]);
+
+  useEffect(() => {
+
+    console.log("Updated filtered hotels:", filteredHotels);
+
+  }, [filteredHotels]);
 
   // extracts all the ids from the hotels list
   const extractHotelIds = (hotels) => {
