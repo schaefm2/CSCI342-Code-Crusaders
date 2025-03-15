@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import HotelList from "../components/HotelList/HotelList";
 import Search from "../components/Search/Search";
-import HotelSearch from "../components/Hotels/HotelData";
+import { hotelSearch, getHotelSearchResults} from "../components/Hotels/HotelData";
 import { useAccessToken } from "../components/AccessTokenContext/AccessTokenContext.jsx";
 
 
@@ -17,6 +17,8 @@ const HotelsPage = () => {
 
   const [error, setError] = useState(null);
   const [searchTriggered, setSearchTriggered] = useState(false);
+  const [sortOrder, setSortOrder] = useState("asc"); // State for price sorting
+
 
   const handleSearch = () =>{
     if (!accessToken) {
@@ -26,21 +28,58 @@ const HotelsPage = () => {
 
     console.log('Calling HotelSearch from HotelsPage');
 
-    HotelSearch({
+    hotelSearch({
       accessToken,
       cityCode: 'SEA',
-      radius: 5,
+      radius: 10,
       setHotels,
       setError
+    }).finally(() => {
+      setSearchTriggered(true);
     });
-
-    console.log(hotels);
-
-    setSearchTriggered(true);
-
-    return null;
   };
-  
+
+  useEffect(() => {
+    if (searchTriggered) {
+      console.log("Updated hotels:", hotels);
+
+      if (hotels && hotels.length > 0) {
+        // Extract hotelIds from the list of hotels
+        const hotelIds = extractHotelIds(hotels);
+
+        console.log("hotelIds: ", hotelIds);
+
+        const trimmedHotelIds = hotelIds.slice(0, 10);
+
+        console.log("hotelIds Trimmed: ", trimmedHotelIds);
+
+        // Fetch more hotel information based on these IDs
+        // getHotelSearchResults(trimmedHotelIds, accessToken, setError);
+        getHotelSearchResults(hotels, accessToken, setError);
+      }
+    }
+  }, [hotels]);
+
+  // extracts all the ids from the hotels list
+  const extractHotelIds = (hotels) => {
+    return hotels.map(hotel => hotel.hotelId);
+  };
+
+  const sortHotelsByPrice = (hotels, order) => {
+    const hotelsCopy = [...hotels];
+
+    // use a shallow copy and then sort it based on price
+    return hotelsCopy.sort((a, b) => {
+      const priceA = Number(a.price.base);  
+      const priceB = Number(b.price.base);  
+
+      if (order === "asc") {
+        return priceA - priceB;
+      } else {
+        return priceB - priceA;
+      }
+    });
+  };
 
   const handleCitySelect = (place) => {
     if (place) {
@@ -49,6 +88,18 @@ const HotelsPage = () => {
     }
   };
 
+  const handleHotelFilter = () => {
+    // Use the existing copy of the hotels array to prevent mutating the original data
+    const sortedHotels = sortHotelsByPrice(hotels, sortOrder);
+
+    setFilteredHotels(sortedHotels);
+
+    console.log(filteredHotels);
+  };
+
+  const handleSortChange = (event) => {
+    setSortOrder(event.target.value);
+  };
 
   return (
     <div className="flex flex-col items-center p-4">
@@ -58,26 +109,43 @@ const HotelsPage = () => {
           placeholder="Enter A City"
           onSelect={handleCitySelect}
         />
+  
+        {/* Dropdown for price sorting */}
+        <div className="mt-4 flex items-center">
+          <div className="mr-4">
+            <label htmlFor="sortOrder" className="mr-4 text-lg">
+              Sort by Price:
+            </label>
+            <select
+              id="sortOrder"
+              value={sortOrder}
+              onChange={handleSortChange}
+              className="p-2 border rounded-full"
+            >
+              <option value="asc">Price: Low to High</option>
+              <option value="desc">Price: High to Low</option>
+            </select>
+          </div>
+  
+          <button
+            className="bg-black text-white p-3 rounded-full"
+            onClick={handleSearch}
+          >
+            Search Hotels
+          </button>
 
-        <button className="bg-black text-white" onClick={handleSearch}>
-          Search Hotels
-        </button>
+          {/* <button
+            className="bg-black text-white p-3 rounded-full"
+            onClick={handleHotelFilter}
+          >
+            Filter Hotels
+          </button> */}
 
-        <div className="space-x-2">
-          <button className="!bg-white text-black px-4 py-2 rounded !hover:bg-blue-700 !active:bg-blue-900">
-            Price Ascending
-          </button>
-          <button className="!bg-white text-black px-4 py-2 rounded !hover:bg-blue-700 !active:bg-blue-900">
-            Price Descending
-          </button>
-          <button className="!bg-white text-black px-4 py-2 rounded ">
-            Rating
-          </button>
         </div>
       </div>
-      
-
-      <HotelList />
+  
+      {/* Render sorted and filtered hotels */}
+      <HotelList hotels={filteredHotels} />
     </div>
   );
 };

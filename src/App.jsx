@@ -10,7 +10,7 @@ import {
 import AmadeusAPITokenCreation from "./components/FlightData/AmadeusAPITokenCreation.jsx";
 import FlightData from "./components/FlightData/FlightData.jsx";
 import fetchAccessToken from "./components/FlightData/AmadeusAPITokenCreation.jsx";
-import HotelData from "./components/Hotels/HotelData.jsx";
+// import HotelData from "./components/Hotels/HotelData.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 
 import { AccessTokenProvider } from "./components/AccessTokenContext/AccessTokenContext.jsx";

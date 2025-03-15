@@ -49,6 +49,8 @@ const logHotelData = (hotels) => {
   
       const data = await response.json();
   
+      // console.log("Fetched hotels data:", data.data);
+
       setHotels(data.data); // Update state with the fetched hotels data
       logHotelData(data.data); // Log hotel data to console
   
@@ -58,5 +60,54 @@ const logHotelData = (hotels) => {
     }
   };
   
-  export default hotelSearch;
   
+  // const hotelData = data.data.map((hotel) => ({
+  //   hotelId: hotel.hotelId,
+  //   name: hotel.name
+  // }));
+    
+  // searches api with all hotelids gotten from the search by the city
+  const getHotelSearchResults = async (hotels, accessToken, setError) => {
+
+    console.log("start of getHotelSearchResults");
+
+    try {
+
+      const hotelIds = hotels.slice(0, 50).map((hotel) => hotel.hotelId)
+
+      console.log("hotelIds: ", hotelIds);
+
+      const offerURL = new URL("https://cors-anywhere.herokuapp.com/https://test.api.amadeus.com/v3/shopping/hotel-offers");
+  
+      const params = {
+        hotelIds: hotelIds  // Pass the hotel IDs as a comma-separated list
+      }
+
+      Object.keys(params).forEach((key) =>
+        offerURL.searchParams.append(key, params[key])
+      );
+
+      const response = await fetch(offerURL, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response from hotel search by IDs:', errorText);
+        throw new Error(`Failed to fetch hotels by IDs from Amadeus API: ${errorText}`);
+      }
+  
+      const data = await response.json();
+      console.log("Fetched hotel details by IDs:", data);
+      // Further handling of the data (e.g., set it to state) can be done here
+    } catch (error) {
+      setError(`Error: ${error.message}`);
+      console.error("Error fetching hotel search results:", error);
+    }
+  };
+  
+  export { hotelSearch, getHotelSearchResults };
