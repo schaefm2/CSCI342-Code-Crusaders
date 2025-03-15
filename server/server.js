@@ -11,6 +11,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const URL = process.env.MONGO_URL;
 
+console.log(".env url: ", URL);
+
 mongoose
   .connect(URL)
   .then(() => {

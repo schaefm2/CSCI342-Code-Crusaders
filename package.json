@@ -4,9 +4,9 @@
   "main": "index.js",
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run client\"",
-    "server":"cd server && npm install && nodemon server.js",
+    "server": "cd server && npm install && nodemon server.js",
     "client": "cd client && npm install && npm run dev",
-    "dev":"cd client && npm run dev"
+    "dev": "cd client && npm run dev"
   },
   "dependencies": {
     "acorn": "^8.14.0",
@@ -63,6 +63,7 @@
     "delayed-stream": "^1.0.0",
     "detect-libc": "^1.0.3",
     "doctrine": "^2.1.0",
+    "dotenv": "^16.4.7",
     "dunder-proto": "^1.0.1",
     "electron-to-chromium": "^1.5.83",
     "emoji-regex": "^8.0.0",
@@ -103,7 +104,6 @@
     "follow-redirects": "^1.15.9",
     "for-each": "^0.3.3",
     "form-data": "^4.0.2",
-
     "function-bind": "^1.1.2",
     "function.prototype.name": "^1.1.8",
     "functions-have-names": "^1.2.3",
@@ -175,7 +175,6 @@
     "keyv": "^4.5.4",
     "levn": "^0.4.1",
     "lightningcss": "^1.29.1",
-
     "locate-path": "^6.0.0",
     "lodash": "^4.17.21",
     "lodash.merge": "^4.6.2",
