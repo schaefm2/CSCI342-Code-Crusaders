@@ -1,0 +1,68 @@
+/* Ensure the html and body take up the full height of the page */
+html, body {
+    height: 100%;
+    margin: 0; /* Remove default margin */
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+}
+
+/* Main content area should grow to push the footer down */
+main {
+    flex: 1; /* Takes up remaining space */
+}
+
+/* Footer styles */
+.footer {
+    background-color: #f7f7f7;
+    color: #6e7072;
+    padding: 0.5em 1rem; /* Reduced padding to make it less tall */
+    font-size: 14px;
+    font-weight: lighter;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-content: center;
+    width: 100%; /* Ensure footer takes full width */
+    max-width: 100%; /* Prevent overflow */
+    box-sizing: border-box; /* Include padding in width calculation */
+    margin-top: auto; /* Push footer to the bottom */
+}
+
+.footer-column {
+    padding: 0.25rem; /* Reduced padding */
+    margin: 0 auto;
+}
+
+.footer-column p {
+    margin: 2px 0; /* Reduced margin to make it less tall */
+    transition: all 0.3s;
+}
+
+.footer-column p:hover {
+    cursor: pointer;
+    color: #805A0F !important;
+}
+
+.footer-heading {
+    margin: 0;
+    font-weight: bold;
+    margin: 2px 0; /* Reduced margin to make it less tall */
+}
+
+.footer-link {
+    color: #6e7072;
+    text-decoration: none;
+    margin: 0.1rem 0; /* Reduced margin to make it less tall */
+    display: block;
+}
+
+/* Scrollbar styles */
+body::-webkit-scrollbar {
+    width: 10px;
+    background-color: #f5f5f5;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #6d6d6d;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
