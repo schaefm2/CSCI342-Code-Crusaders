@@ -14,6 +14,9 @@ const HotelsPage = () => {
 
   const [hotels, setHotels] = useState([]);
   const [filteredHotels, setFilteredHotels] = useState([]);  // copy for filtering without manipulating original result
+  const [minPrice, setMinPrice] = useState(100);
+  const [maxPrice, setMaxPrice] = useState(400);
+
 
   const [error, setError] = useState(null);
   const [searchTriggered, setSearchTriggered] = useState(false);
@@ -55,7 +58,7 @@ const HotelsPage = () => {
 
         // Fetch more hotel information based on these IDs
         // getHotelSearchResults(trimmedHotelIds, accessToken, setError);
-        getHotelSearchResults(hotels, accessToken, setFilteredHotels, setError);
+        getHotelSearchResults(hotels, accessToken, minPrice, maxPrice, setFilteredHotels, setError);
 
         console.log("Filtered hotels inside hotelsPage: ", filteredHotels);
       }
