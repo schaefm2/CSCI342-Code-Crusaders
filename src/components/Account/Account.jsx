@@ -3,10 +3,15 @@ import { useSelector } from "react-redux"; // Redux hook for accessing state
 import { toast } from "react-hot-toast"
 
 const AccountPage = () => {
-    // assuming max is going to set up the correct dispatch calls in loginForm.jsx
     const { user } = useSelector((state) => state.auth)
 
-    // declare states
+    // create a formData object (got caught up in sum finishing later)
+    // const formData = {
+    //   firstName: "",
+    //   lastName: "",
+    //   email: "",
+    // }
+
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -32,6 +37,11 @@ const AccountPage = () => {
     - altered Navigation.jsx to correctly display and account button or login button based on user data in the store
     - implemented protected route based on a loaded state and user presence
     */
+
+    // Finish later aswell
+    // const handleChange = (e) => {
+    //   setFormData({ ...formData, [e.target.name]: e.target.value });
+    // };
    
   return (
     <div className="min-h-screen bg-reviewColor flex items-center justify-center p-8">
@@ -136,13 +146,13 @@ const AccountPage = () => {
                 Company
               </label>
               <input
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
                 type="text"
                 id="company"
                 name="company"
                 placeholder="Company"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
               />
             </div>
           </div>
@@ -154,7 +164,7 @@ const AccountPage = () => {
               backgroundColor: 'var(--blueButtonColor)',
             }}
             className="w-full md:w-auto text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline transition-colors duration-300 hover:bg-blue-700"
-            onClick={() => toast.success('Changes saved!')}
+            onClick={() => toast.success("Changes saved!")}
           >
             Save Changes
           </button>

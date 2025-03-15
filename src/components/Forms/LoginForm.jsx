@@ -34,26 +34,33 @@ const LoginForm = () => {
     });
   }, [errors]);
   const onSubmit = (data) => {
-    setIsLoading(true)
+    setIsLoading(true);
 
-    // Functional login via local storage and store authenticator
-    // STARTING HERE should be a try catch statement attempting to fetch login data from the database
-    const userData = JSON.parse(localStorage.getItem("user"));
-    const storedEmail = userData ? userData.email : null;
-    const storedPassword = userData ? userData.password : null;
-
-    if (email === storedEmail && userData.password === storedPassword) {
-      toast.success("login successful");
-      dispatch(login(userData))
-      navigate("/account")
-
-    } else {
-      toast.error("Invalid email or password");
+    try{
+      fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if(response.ok){
+          return response.json();
+        }
+      })
+      .then((data) => {
+        dispatch(login(data.user));
+        toast.success("Login successful.")
+        navigate("/account");
+      })
+      .catch(err => {
+        toast.error(`Login failed: ${err.message}`);
+      })
     }
-    console.log("click registered");
-    // ENDING HERE
-
-    setIsLoading(false)
+    catch (err) {
+      toast.error("An error occurred during login. Please try again.")
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

@@ -43,26 +43,39 @@ const SignupForm = () => {
   });
 
   const onSubmit = (data) => {
-    if (data.password !== data.confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
+    if(data.password !== data.confirmPassword){
+      toast.error("Passwords do not match")
     }
 
-    try {
+    try{
       setIsLoading(true);
-      //const response = await...
-
-      //check response ok
-      console.log("user: ", JSON.stringify(data));
-      localStorage.setItem("user", JSON.stringify(data));
-      toast.success("Signup successful. Please login");
-      navigate("/login");
-    } catch (error) {
-      console.error("Signup error:", error);
-      toast.error("An error occurred during signup. Please try again");
-    } finally {
+  
+      fetch("http://localhost:3000/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if(response.ok){
+          toast.success("Signup successful. Please login.");
+          navigate("/login");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        toast.error("An error occurred during signup.");
+      })
+    }
+    catch (error) {
+      console.error("Signup error: ", error);
+      toast.error("An error occurred during signup. Please try again.");
+    } 
+    finally {
       setIsLoading(false);
     }
+
+    //storing in console for testing purposes
+    console.log("Signup data: ", data);
   };
 
   useEffect(() => {

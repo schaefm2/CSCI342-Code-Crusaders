@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     profession: { type: String, required: true},
-    phone: { type: String, required: true },
+    phoneNumber: { type: String, required: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
 })
@@ -87,24 +87,37 @@ const Hotel = mongoose.model("Hotel", hotelSchema);
 const Trip = mongoose.model("Trip", tripSchema);
 
 //stole this from from ass-8 do we want this password validation?
-const validatePassword = (password) => {
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
-  return passwordRegex.test(password);
-};
+function validatePassword(password) {
+  const minLength = 6;
+  const hasLetter = /[a-zA-Z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  return password.length >= minLength && hasLetter && hasNumber;
+}
 
 app.post("/api/signup", async (req, res) => {
     const {email, password, ...rest} = req.body;
   try {
     const user = await User.findOne({ email });
+
+    //DEBUG LINE
+    console.log("user after the findOne() called", user);
+
     if (user) {
       return res.status(400).json({ message: "user already exists" });
     }
+
+    //DEBUG LINE
+    console.log("user does not exist validate password and create");
+
     if (!validatePassword(password)) {
       return res.status(400).json({
         message:
           "password must be at least 6 characters long and contain at least one letter and one number",
       });
     }
+
+    console.log("users password was validated succesfully");
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ ...rest,email, password: hashedPassword });
 
