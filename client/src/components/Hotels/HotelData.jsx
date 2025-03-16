@@ -163,6 +163,7 @@ const getHotelSearchResults = async (
       });
 
       if (!response.ok) {
+        console.log("Filtering failed, ", [chunks[i]]);
         const errorText = await response.text();
         console.error("Error response from hotel search by IDs:", errorText);
         throw new Error(
