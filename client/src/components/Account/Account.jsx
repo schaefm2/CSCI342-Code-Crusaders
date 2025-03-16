@@ -49,13 +49,27 @@ const AccountPage = () => {
           throw new Error("Failed to update user data");
         }
 
-        const updatedUser = await response.json();
-        
-        // if i call dispatch then i lose my authentication key from JWT.
-        // need a workaround to this.
-        //dispatch(login(updatedUser));
-        toast.success("Changes saved!");
+        const updatedData = await response.json();
 
+        console.log(updatedData.user);
+
+        setFormData({
+          firstName: updatedData.user.firstName || "",
+          lastName: updatedData.user.lastName || "",
+          email: updatedData.user.email || "",
+          phoneNumber: updatedData.user.phoneNumber || "",
+          profession: updatedData.user.profession || "",
+        });
+        
+        // Merge the existing token into the updated user object.
+        const updatedUserWithToken = {
+          ...updatedData.user,
+          token: user.token, // Preserve the current token from Redux state
+        };
+
+        // Dispatch the updated user with token to update Redux store.
+        dispatch(login(updatedUserWithToken));
+        toast.success("Changes saved!");
       } catch (error) {
         console.error(error);
         toast.error("Error saving changes. Please try again.");

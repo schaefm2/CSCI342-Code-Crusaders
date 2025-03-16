@@ -113,15 +113,9 @@ app.post("/api/signup", async (req, res) => {
   try {
     const user = await User.findOne({ email });
 
-    //DEBUG LINE
-    console.log("user after the findOne() called", user);
-
     if (user) {
       return res.status(400).json({ message: "user already exists" });
     }
-
-    //DEBUG LINE
-    console.log("user does not exist validate password and create");
 
     if (!validatePassword(password)) {
       return res.status(400).json({
@@ -174,7 +168,7 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-// DOESNT FULLY WORK YET
+//update account info
 app.put("/api/account/:email", async (req, res) => {
   try {
     const email = req.params.email;
@@ -193,7 +187,7 @@ app.put("/api/account/:email", async (req, res) => {
       return res.status(400).json({ message: "User not found" });
     }
 
-    res.status(201).json("user updated successfully");
+    res.status(201).json({message: "user updated successfully", user: updatedUser});
   } catch (error) {
     console.error("Error updating user:", error);
     res.status(500).json({ message: "Server error updating user" });

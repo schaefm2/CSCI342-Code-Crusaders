@@ -8,6 +8,7 @@ const initialUserState = {
   profession: "",
   phoneNumber: "",
   trips: [],
+  token: ""
 };
 
 // initial auth state
@@ -23,9 +24,9 @@ export const authSlice = createSlice({
     // login action
     // The login action will update the user state with the payload and set loaded to true, indicating that user data has been loaded or the user has successfully logged in.
     login: (state, action) => {
-      state.user = action.payload;
+      //state.user = action.payload;
       state.loaded = true;
-      //state.user = { ...state.user, ...action.payload };
+      state.user = { ...state.user, ...action.payload };
     },
     // logout action
     // The logout action resets the user state to initialUserState and sets loaded to false, reflecting that the user has logged out and no user data should be considered loaded.
