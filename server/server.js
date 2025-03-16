@@ -34,7 +34,6 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
 });
 
-
 const flightSchema = new mongoose.Schema({
   departure: { type: String, required: true },
   departureDate: { type: String, required: true },
@@ -61,15 +60,21 @@ const eventSchema = new mongoose.Schema({
   name: { type: String, required: true },
   day: { type: String, required: true },
   time: { type: String, required: true },
-  address: { type: String},
-  description: { type: String},
-})
+  address: { type: String },
+  description: { type: String },
+});
+
+const daySchema = new mongoose.Schema({
+  location: { type: String, required: true },
+  date: { type: String, required: true },
+  events: [eventSchema],
+});
 
 const tripSchema = new mongoose.Schema({
   email: { type: String, required: true }, //foreign key to user
   flights: [flightSchema],
   hotels: [hotelSchema],
-  eventg: [eventSchema],
+  days: [daySchema],
   startDate: { type: String, required: true },
   endDate: { type: String, required: true },
   tripName: { type: String, required: true },
@@ -99,6 +104,7 @@ const User = mongoose.model("User", userSchema);
 const Flight = mongoose.model("Flight", flightSchema);
 const Hotel = mongoose.model("Hotel", hotelSchema);
 const Trip = mongoose.model("Trip", tripSchema);
+const Day = mongoose.model("Day", daySchema);
 
 //stole this from from ass-8 do we want this password validation?
 function validatePassword(password) {
@@ -180,7 +186,9 @@ app.put("/api/account/:email", async (req, res) => {
 
     // find user by email and update
     const updatedUser = await User.findOneAndUpdate(
-      { email: email },  updateData, { new: true, runValidators: true }
+      { email: email },
+      updateData,
+      { new: true, runValidators: true }
     );
 
     console.log("updated user: ", updatedUser);
@@ -190,23 +198,24 @@ app.put("/api/account/:email", async (req, res) => {
     }
 
     res.status(201).json("user updated successfully");
-
   } catch (error) {
     console.error("Error updating user:", error);
     res.status(500).json({ message: "Server error updating user" });
   }
-})
+});
 
 app.post("/api/getuser", async (req, res) => {});
 
 //create trip
 app.post("/api/trip", authenticateJWT, async (req, res) => {
-  const { email, flights, hotels, startDate, endDate, tripName } = req.body;
+  const { email, flights, hotels, days, startDate, endDate, tripName } =
+    req.body;
   try {
     const newTrip = new Trip({
       email,
       flights,
       hotels,
+      days,
       startDate,
       endDate,
       tripName,
@@ -303,11 +312,10 @@ app.post("/api/deletehotel", authenticateJWT, async (req, res) => {
 app.post("/api/addevent", authenticateJWT, async (req, res) => {
   const { email, tripName, event } = req.body;
   try {
-    const newEvent = new Event(event);
     const updatedTrip = await Trip.findOneAndUpdate(
       { email, tripName },
-      { $push: { events: newEvent } },
-      { new: true }
+      { $push: { "days.$[day].events": event } },
+      { arrayFilters: [{ "day.date": event.day }], new: true }
     );
     return res
       .status(200)
@@ -322,8 +330,10 @@ app.post("/api/deleteevent", authenticateJWT, async (req, res) => {
   try {
     const updatedTrip = await Trip.findOneAndUpdate(
       { email, tripName },
-      { $pull: { events: event } },
-      { new: true }
+      {
+        $pull: { "days.$[day].events": { name: event.name, time: event.time } },
+      },
+      { arrayFilters: [{ "day.date": event.day }], new: true }
     );
     return res
       .status(200)
@@ -337,7 +347,11 @@ app.post("/api/getevents", authenticateJWT, async (req, res) => {
   const { email, tripName } = req.body;
   try {
     const trip = await Trip.findOne(email, tripName);
-    return res.status(200).json({ events: trip.events, flights: trip.flights, hotels: trip.hotels });
+    return res.status(200).json({
+      events: trip.events,
+      flights: trip.flights,
+      hotels: trip.hotels,
+    });
   } catch (error) {
     return res.status(500).json({ message: "error getting events" });
   }
@@ -352,7 +366,6 @@ app.post("/api/gettrips", authenticateJWT, async (req, res) => {
     return res.status(500).json({ message: "error getting trips" });
   }
 });
-
 
 //create a new flight
 /*app.post("/api/createflight", authenticateJWT, async (req, res) => {

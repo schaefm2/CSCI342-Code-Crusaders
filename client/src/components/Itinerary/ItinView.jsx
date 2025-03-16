@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const ItinView = ({ itinerary }) => {
   const [itineraryData, setItineraryData] = useState(itinerary);
@@ -7,17 +8,17 @@ const ItinView = ({ itinerary }) => {
     setItineraryData(itinerary);
   }, [itinerary]);
 
-  const handleEdit = (dayIndex, activityIndex) => {
+  const handleEdit = async (dayIndex, activityIndex) => {
     const newActivityName = prompt("Enter new activity name:");
     const newActivityTime = prompt("Enter new activity time:");
     const newActivityAddress = prompt("Enter new activity address:");
     const newActivityDescription = prompt("Enter new activity description:");
 
-    const updatedDayInfo = itineraryData.dayInfo.map((day, dIndex) => {
+    const updateddays = itineraryData.days.map((day, dIndex) => {
       if (dIndex === dayIndex) {
         return {
           ...day,
-          activities: day.activities.map((activity, aIndex) => {
+          events: day.events.map((activity, aIndex) => {
             if (aIndex === activityIndex) {
               return {
                 ...activity,
@@ -34,26 +35,74 @@ const ItinView = ({ itinerary }) => {
       return day;
     });
 
-    setItineraryData({ ...itineraryData, dayInfo: updatedDayInfo });
+    setItineraryData({ ...itineraryData, days: updateddays });
+
+    try {
+      // Update event in the backend
+      const response = await axios.post("http://localhost:3000/api/addevent", {
+        email: itineraryData.email,
+        tripName: itineraryData.tripName,
+        event: {
+          ...updateddays[dayIndex].events[activityIndex],
+          day: itineraryData.days[dayIndex].date,
+        },
+      });
+
+      if (!response.status === 200) {
+        throw new Error("Failed to update event");
+      }
+      console.log(
+        "Event updated successfully:",
+        updateddays[dayIndex].events[activityIndex]
+      );
+    } catch (error) {
+      console.error("Error updating event:", error);
+    }
   };
 
-  const handleDelete = (dayIndex, activityIndex) => {
-    const updatedDayInfo = itineraryData.dayInfo.map((day, dIndex) => {
+  const handleDelete = async (dayIndex, activityIndex) => {
+    const updateddays = itineraryData.days.map((day, dIndex) => {
       if (dIndex === dayIndex) {
         return {
           ...day,
-          activities: day.activities.filter(
-            (_, aIndex) => aIndex !== activityIndex
-          ),
+          events: day.events.filter((_, aIndex) => aIndex !== activityIndex),
         };
       }
       return day;
     });
 
-    setItineraryData({ ...itineraryData, dayInfo: updatedDayInfo });
+    setItineraryData({ ...itineraryData, days: updateddays });
+
+    try {
+      // Delete event from the backend
+      const response = await fetch("http://localhost:3000/api/deleteevent", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: itineraryData.email,
+          tripName: itineraryData.tripName,
+          event: {
+            ...itineraryData.days[dayIndex].events[activityIndex],
+            day: itineraryData.days[dayIndex].date,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete event");
+      }
+      console.log(
+        "Event deleted successfully:",
+        itineraryData.days[dayIndex].events[activityIndex]
+      );
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    }
   };
 
-  const handleAddActivity = (dayIndex) => {
+  const handleAddActivity = async (dayIndex) => {
     const newActivityName = prompt("Enter new activity name:");
     const newActivityTime = prompt("Enter new activity time:");
     const newActivityAddress = prompt("Enter new activity address:");
@@ -66,26 +115,51 @@ const ItinView = ({ itinerary }) => {
       description: newActivityDescription,
     };
 
-    const updatedDayInfo = itineraryData.dayInfo.map((day, dIndex) => {
+    const updateddays = itineraryData.days.map((day, dIndex) => {
       if (dIndex === dayIndex) {
         return {
           ...day,
-          activities: [...day.activities, newActivity],
+          events: [...day.events, newActivity],
         };
       }
       return day;
     });
 
-    setItineraryData({ ...itineraryData, dayInfo: updatedDayInfo });
+    setItineraryData({ ...itineraryData, days: updateddays });
+
+    try {
+      // Add event to the backend
+      const response = await fetch("http://localhost:3000/api/addevent", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: itineraryData.email,
+          tripName: itineraryData.tripName,
+          event: {
+            ...newActivity,
+            day: itineraryData.days[dayIndex].date,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add event");
+      }
+      console.log("Event added successfully:", newActivity);
+    } catch (error) {
+      console.error("Error adding event:", error);
+    }
   };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen w-200 mx-auto">
-      <h1 className="text-4xl font-bold mb-4">{itineraryData.title}</h1>
+      <h1 className="text-4xl font-bold mb-4">{itineraryData.tripName}</h1>
       <p className="text-lg mb-6">
         {itineraryData.startDate} - {itineraryData.endDate}
       </p>
-      {itineraryData.dayInfo.map((day, index) => (
+      {itineraryData.days.map((day, index) => (
         <div key={index} className="mb-8">
           <h2 className="text-2xl font-semibold mb-2">
             Day {index + 1}: {day.location}
@@ -99,7 +173,7 @@ const ItinView = ({ itinerary }) => {
           </button>
           <table className="w-full text-left">
             <tbody>
-              {day.activities.map((activity, idx) => (
+              {day.events.map((activity, idx) => (
                 <tr key={idx} className="border-b">
                   <td className="py-2 pr-4 text-sm text-gray-500">
                     {activity.time}

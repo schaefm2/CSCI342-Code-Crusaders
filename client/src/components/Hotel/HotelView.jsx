@@ -48,6 +48,11 @@ const HotelView = () => {
         <span className="font-semibold">Cancellation Policy:</span>{" "}
         {hotelData.cancellationPolicy}
       </p>
+      <select className="mb-4 p-2 border rounded">
+        <option value="standard">Standard Room</option>
+        <option value="deluxe">Deluxe Room</option>
+        <option value="suite">Suite</option>
+      </select>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {/* {images.map((image) => (
           <img

@@ -3,12 +3,15 @@ import Search from "../Search/Search.jsx";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import minus from "../../assets/minus.svg";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
-const CreateTrip = () => {
+const CreateTrip = ({ setCreatingTrip }) => {
   const [locations, setLocations] = useState([
     { place: "", startDate: new Date(), endDate: new Date() },
   ]);
   const [trip, setTrip] = useState({ title: "", locations: locations });
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     setTrip((prevTrip) => ({ ...prevTrip, locations }));
@@ -46,10 +49,32 @@ const CreateTrip = () => {
     handleChange(index, "place", place.properties.formatted);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Navigate to a trip page or handle the form submissio
-    console.log(trip);
+    try {
+      const response = await axios.post("http://localhost:3000/api/trip", {
+        email: user.email,
+        tripName: trip.title,
+        startDate: locations[0].startDate.toISOString().split("T")[0],
+        endDate: locations[locations.length - 1].endDate
+          .toISOString()
+          .split("T")[0],
+        days: locations.map((location) => ({
+          location: location.place,
+          date: location.startDate.toISOString().split("T")[0],
+          events: [],
+        })),
+        flights: [],
+        hotels: [],
+      });
+
+      if (response.status !== 201) {
+        throw new Error(response.data.message || "Something went wrong");
+      }
+      setCreatingTrip(false);
+    } catch (error) {
+      console.error("Error creating trip:", error);
+    }
   };
 
   return (
