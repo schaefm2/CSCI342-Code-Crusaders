@@ -23,6 +23,12 @@ const Hotel = ({ hotel }) => {
   //   }
   // }, [hotel]);
 
+  const handleAddHotel = (hotel) => {
+    // TODO: Add rest of logic here to add to itinerary
+    console.log('Hotel added by add button:', hotel);
+  
+  };
+
   return (
   <div className="w-80 h-35 shadow">
     <div className="relative p-2 flex flex-col h-full">
@@ -34,10 +40,9 @@ const Hotel = ({ hotel }) => {
         <p className="text-lg font-bold">${hotel.offers[0].price.base}</p>
       </div>
 
-      {/* This will allow the button to sit at the bottom-right */}
       <button
         className="absolute bottom-4 right-4 bg-black text-white p-2 rounded-full"
-        onClick={() => handleAddFlight(flight)}
+        onClick={() => handleAddHotel(hotel)}
       >
         Add
       </button>
