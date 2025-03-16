@@ -48,8 +48,14 @@ const LoginForm = () => {
         }
       })
       .then((data) => {
-        dispatch(login(data.user));
-        toast.success("Login successful.")
+        
+        // merge token with user details so that when account changes go through then the authentication state will stay the same
+        const userWithToken = {
+          ...data.user,
+          token: data.token,
+        };
+        dispatch(login(userWithToken));
+        toast.success("Login successful.");
         navigate("/account");
       })
       .catch(err => {
