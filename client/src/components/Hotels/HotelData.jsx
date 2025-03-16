@@ -102,6 +102,11 @@ const getHotelSearchResults = async (
     let filteredHotels = [];
 
     for (let i = 0; i < chunks.length; i++) {
+      
+      if (i == 3) {
+        console.log("Shrinking search to prevent long load times...");
+        break;
+      }
       console.log(`Fetching details for chunk ${i + 1}...`);
 
       // Create the request URL for the current chunk of hotel IDs
