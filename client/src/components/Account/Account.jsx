@@ -1,47 +1,66 @@
 import React, {useState, useEffect} from 'react';
-import { useSelector } from "react-redux"; // Redux hook for accessing state
-import { toast } from "react-hot-toast"
+import { useSelector, useDispatch } from "react-redux"; 
+import { toast } from "react-hot-toast";
+import { login } from '../../store/slices/authSlice'
 
 const AccountPage = () => {
     const { user } = useSelector((state) => state.auth)
+    const dispatch = useDispatch()
 
-    // create a formData object (got caught up in sum finishing later)
-    // const formData = {
-    //   firstName: "",
-    //   lastName: "",
-    //   email: "",
-    // }
+    const [formData, setFormData] = useState({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      profession: ""
+    });
 
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [profession, setProfession] = useState('');
-    const [company, setCompany] = useState('');
-
+    // maybe i can set this up using localstorage instead so that it updates when values are changed.
     // set states according to data from store.
     useEffect(() => {
-        setFirstName(user.firstName);
-        setLastName(user.lastName);
-        setEmail(user.email);
-        // Optional fields are set with fallbacks
-        setPhoneNumber(user.phoneNumber || "");
-        setCompany(user.company || ""); 
-        setProfession(user.profession || ""); 
-        setCompany(user.company || "");
+      setFormData({
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        email: user.email || "",
+        phoneNumber: user.phoneNumber || "",
+        profession: user.profession || "",
+    });
     }, [user]);
-    
-    /*
-    - using dipatch() call to store in loginForm.jsx
-    - using localstorage to hold temporary user and password (WILL NEED TO BE CHANGED TO DATABASE)
-    - altered Navigation.jsx to correctly display and account button or login button based on user data in the store
-    - implemented protected route based on a loaded state and user presence
-    */
 
-    // Finish later aswell
-    // const handleChange = (e) => {
-    //   setFormData({ ...formData, [e.target.name]: e.target.value });
-    // };
+    // uses all previous data and adjusts the given target value change
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setFormData((prevData) => ({...prevData, [name]: value}));
+    }
+
+    // put request to change data present in the database
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+        const response = await fetch(`http://localhost:3000/api/account/${formData.email}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData)
+        });
+  
+        if (!response.ok) {
+          throw new Error("Failed to update user data");
+        }
+
+        const updatedUser = await response.json();
+        
+        // if i call dispatch then i lose my authentication key from JWT.
+        // need a workaround to this.
+        //dispatch(login(updatedUser));
+        toast.success("Changes saved!");
+
+      } catch (error) {
+        console.error(error);
+        toast.error("Error saving changes. Please try again.");
+      } 
+    };
    
   return (
     <div className="min-h-screen bg-reviewColor flex items-center justify-center p-8">
@@ -58,12 +77,29 @@ const AccountPage = () => {
                 First Name
               </label>
               <input
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                defaultValue={formData.firstName}
+                onChange={handleChange}
                 type="text"
                 id="firstName"
                 name="firstName"
                 placeholder="First Name"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="lastName"
+                className="block text-gray-700 text-sm font-bold mb-1"
+              >
+                Last Name
+              </label>
+              <input
+                defaultValue={formData.lastName}
+                onChange={handleChange}
+                type="text"
+                id="lastName"
+                name="lastName"
+                placeholder="Last Name"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
@@ -75,12 +111,32 @@ const AccountPage = () => {
                 Email
               </label>
               <input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                defaultValue={formData.email}
+                onChange={handleChange}
                 type="email"
                 id="email"
                 name="email"
                 placeholder="Email Address"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+          </div>
+          {/* right Column */}
+          <div className="flex flex-col gap-4">
+            <div>
+              <label
+                htmlFor="phoneNumber"
+                className="block text-gray-700 text-sm font-bold mb-1"
+              >
+                Phone Number
+              </label>
+              <input
+                defaultValue={formData.phoneNumber}
+                onChange={handleChange}
+                type="tel"
+                id="phoneNumber"
+                name="phoneNumber"
+                placeholder="Phone Number"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
@@ -92,67 +148,13 @@ const AccountPage = () => {
                 Profession
               </label>
               <input
-                value={profession}
-                onChange={(e) => setProfession(e.target.value)}
+                defaultValue={formData.profession}
+                onChange={handleChange}
                 type="text"
                 id="profession"
                 name="profession"
                 placeholder="Profession"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
-            </div>
-          </div>
-          {/* right Column */}
-          <div className="flex flex-col gap-4">
-            <div>
-              <label
-                htmlFor="lastName"
-                className="block text-gray-700 text-sm font-bold mb-1"
-              >
-                Last Name
-              </label>
-              <input
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                type="text"
-                id="lastName"
-                name="lastName"
-                placeholder="Last Name"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="phoneNumber"
-                className="block text-gray-700 text-sm font-bold mb-1"
-              >
-                Phone Number
-              </label>
-              <input
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                type="tel"
-                id="phoneNumber"
-                name="phoneNumber"
-                placeholder="Phone Number"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="company"
-                className="block text-gray-700 text-sm font-bold mb-1"
-              >
-                Company
-              </label>
-              <input
-                type="text"
-                id="company"
-                name="company"
-                placeholder="Company"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
               />
             </div>
           </div>
@@ -164,7 +166,7 @@ const AccountPage = () => {
               backgroundColor: 'var(--blueButtonColor)',
             }}
             className="w-full md:w-auto text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline transition-colors duration-300 hover:bg-blue-700"
-            onClick={() => toast.success("Changes saved!")}
+            onClick={handleSubmit}
           >
             Save Changes
           </button>

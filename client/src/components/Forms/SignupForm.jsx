@@ -87,6 +87,7 @@ const SignupForm = () => {
     <div className="card">
       <form onSubmit={handleSubmit(onSubmit)}>
         <h2>Signup</h2>
+        <p>Create your Crusader account!</p>
 
         <label htmlFor="firstName">
           <b className="email-login">First Name</b>
