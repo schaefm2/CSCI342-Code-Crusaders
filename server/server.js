@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { late } = require("zod");
+const { add } = require("lodash");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,7 +33,6 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
 });
 
-//TODO: other schemas
 
 const flightSchema = new mongoose.Schema({
   departure: { type: String, required: true },
@@ -53,10 +53,19 @@ const hotelSchema = new mongoose.Schema({
   distance: { type: Number, required: true },
 });
 
+const eventSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  day: { type: String, required: true },
+  time: { type: String, required: true },
+  address: { type: String},
+  description: { type: String},
+})
+
 const tripSchema = new mongoose.Schema({
   email: { type: String, required: true }, //foreign key to user
   flights: [flightSchema],
   hotels: [hotelSchema],
+  eventg: [eventSchema],
   startDate: { type: String, required: true },
   endDate: { type: String, required: true },
   tripName: { type: String, required: true },
@@ -261,9 +270,63 @@ app.post("/api/deletehotel", authenticateJWT, async (req, res) => {
     return res.status(500).json({ message: "error deleting hotel" });
   }
 });
+//add event to trip
+app.post("/api/addevent", authenticateJWT, async (req, res) => {
+  const { email, tripName, event } = req.body;
+  try {
+    const newEvent = new Event(event);
+    const updatedTrip = await Trip.findOneAndUpdate(
+      { email, tripName },
+      { $push: { events: newEvent } },
+      { new: true }
+    );
+    return res
+      .status(200)
+      .json({ message: "event added successfully", trip: updatedTrip });
+  } catch (error) {
+    return res.status(500).json({ message: "error adding event" });
+  }
+});
+//delete event from trip
+app.post("/api/deleteevent", authenticateJWT, async (req, res) => {
+  const { email, tripName, event } = req.body;
+  try {
+    const updatedTrip = await Trip.findOneAndUpdate(
+      { email, tripName },
+      { $pull: { events: event } },
+      { new: true }
+    );
+    return res
+      .status(200)
+      .json({ message: "event deleted successfully", trip: updatedTrip });
+  } catch (error) {
+    return res.status(500).json({ message: "error deleting event" });
+  }
+});
+//get all events for a trip
+app.post("/api/getevents", authenticateJWT, async (req, res) => {
+  const { email, tripName } = req.body;
+  try {
+    const trip = await Trip.findOne(email, tripName);
+    return res.status(200).json({ events: trip.events, flights: trip.flights, hotels: trip.hotels });
+  } catch (error) {
+    return res.status(500).json({ message: "error getting events" });
+  }
+});
+//get all trips for a user
+app.post("/api/gettrips", authenticateJWT, async (req, res) => {
+  const { email } = req.body;
+  try {
+    const trips = await Trip.find({ email });
+    return res.status(200).json({ trips });
+  } catch (error) {
+    return res.status(500).json({ message: "error getting trips" });
+  }
+});
+
 
 //create a new flight
-app.post("/api/createflight", authenticateJWT, async (req, res) => {
+/*app.post("/api/createflight", authenticateJWT, async (req, res) => {
   const {
     departure,
     departureDate,
@@ -306,7 +369,7 @@ app.post("/api/createhotel", authenticateJWT, async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: "error creating hotel" });
   }
-});
+});*/
 
 app.get("/", (req, res) => {
   res.send("root path");
