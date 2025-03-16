@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useAccessToken } from "../AccessTokenContext/AccessTokenContext.jsx";
+import { useSelector } from "react-redux";
 
 const HotelView = () => {
-  const { id } = useParams();
+  const { user } = useSelector((state) => state.auth);
   const location = useLocation();
   const [images, setImages] = useState([]);
   const [hotelData, setHotelData] = useState(location.state?.hotel || {});
@@ -48,11 +49,7 @@ const HotelView = () => {
         <span className="font-semibold">Cancellation Policy:</span>{" "}
         {hotelData.cancellationPolicy}
       </p>
-      <select className="mb-4 p-2 border rounded">
-        <option value="standard">Standard Room</option>
-        <option value="deluxe">Deluxe Room</option>
-        <option value="suite">Suite</option>
-      </select>
+      <select className="mb-4 p-2 border rounded"></select>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {/* {images.map((image) => (
           <img

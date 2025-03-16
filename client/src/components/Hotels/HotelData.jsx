@@ -15,21 +15,24 @@ const logHotelData = (hotels) => {
   });
 };
 
-
 // Function to filter out hotels with no rooms available or invalid property codes
 const filterAvailableHotels = (hotelsData) => {
   return hotelsData.filter((hotel) => {
     // Check for error codes and filter them out
     if (hotel.errors) {
-      hotel.errors.forEach(error => {
+      hotel.errors.forEach((error) => {
         console.error(`Error for hotel ${hotel.hotelId}:`, error.detail);
       });
     }
-    return !hotel.errors || !hotel.errors.some(error => 
-      errorCodes.includes('3664') ||
-      errorCodes.includes('1257') ||
-      errorCodes.includes('1351') || 
-      errorCodes.includes('11')
+    return (
+      !hotel.errors ||
+      !hotel.errors.some(
+        (error) =>
+          errorCodes.includes("3664") ||
+          errorCodes.includes("1257") ||
+          errorCodes.includes("1351") ||
+          errorCodes.includes("11")
+      )
     );
   });
 };
@@ -103,11 +106,14 @@ const getHotelSearchResults = async (
   accessToken,
   minPrice,
   maxPrice,
+  checkInDate,
+  checkOutDate,
+  adults,
   setFilteredHotels,
   setError
 ) => {
   console.log("Start of getHotelSearchResults");
-  
+
   // console.log("Filtered hotels before filtering:", hotels);
   // const availableHotels = filterAvailableHotels(hotels);
   // console.log("Available hotels after filtering:", availableHotels);
@@ -127,7 +133,6 @@ const getHotelSearchResults = async (
     let filteredHotels = [];
 
     for (let i = 0; i < chunks.length; i++) {
-      
       if (i == 3) {
         console.log("Shrinking search to prevent long load times...");
         break;
@@ -141,9 +146,14 @@ const getHotelSearchResults = async (
 
       const params = {
         hotelIds: chunks[i].join(","), // Join hotel IDs into a comma-separated list
-        minPrice: minPrice, // Add minPrice filter
-        maxPrice: maxPrice, // Add maxPrice filter
+        adults: parseInt(adults, 10), // Ensure adults is an integer
+        checkInDate: checkInDate, // Dates are already strings
+        checkOutDate: checkOutDate, // Dates are already strings
+        minPrice: minPrice, // Ensure minPrice is a string
+        maxPrice: maxPrice, // Ensure maxPrice is a string
       };
+
+      console.log("Fetching with params:", JSON.stringify(params, null, 2));
 
       // Append the parameters to the URL
       Object.keys(params).forEach((key) => {
@@ -170,7 +180,7 @@ const getHotelSearchResults = async (
           `Failed to fetch hotels by IDs from Amadeus API: ${errorText}`
         );
       }
-      
+
       const data = await response.json();
       console.log(`Fetched hotel details for chunk ${i + 1}:`, data);
       // const availableHotels = filterAvailableHotels(data.data);

@@ -6,6 +6,8 @@ import {
   getHotelSearchResults,
 } from "../components/Hotels/HotelData";
 import { useAccessToken } from "../components/AccessTokenContext/AccessTokenContext.jsx";
+import DatePicker from "react-datepicker";
+import { format } from "date-fns"; // Import the format function
 
 const HotelsPage = () => {
   const { accessToken, loading } = useAccessToken();
@@ -20,8 +22,12 @@ const HotelsPage = () => {
 
   const [hotels, setHotels] = useState([]);
   const [filteredHotels, setFilteredHotels] = useState([]); // copy for filtering without manipulating original result
-  const [minPrice, setMinPrice] = useState(100);
+  const [minPrice, setMinPrice] = useState(80);
   const [maxPrice, setMaxPrice] = useState(400);
+
+  const [adults, setAdults] = useState(1);
+  const [checkInDate, setCheckInDate] = useState("");
+  const [checkOutDate, setCheckOutDate] = useState("");
 
   const [error, setError] = useState(null);
   const [searchTriggered, setSearchTriggered] = useState(false);
@@ -29,7 +35,6 @@ const HotelsPage = () => {
 
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [searchPerformed, setSearchPerformed] = useState(false);
-  
 
   const handleSearch = () => {
     if (!accessToken) {
@@ -51,8 +56,6 @@ const HotelsPage = () => {
 
     setHotels([]);
     setFilteredHotels([]);
-
-
 
     // console.log("cityCodeState: ", cityCodeState);
 
@@ -95,6 +98,9 @@ const HotelsPage = () => {
           accessToken,
           minPrice,
           maxPrice,
+          format(checkInDate, "yyyy-MM-dd"), // Format the check-in date
+          format(checkOutDate, "yyyy-MM-dd"), // Format the check-out date
+          adults,
           setFilteredHotels,
           setError
         ).finally(() => {
@@ -171,11 +177,12 @@ const HotelsPage = () => {
 
   return (
     <div className="flex flex-col items-center p-4">
-
       {/* Show error message if there is an error during handling search*/}
       {error && (
         <div className="text-red-500 mb-4 font-semibold">
-          {"Search failed, please enter a city and select it from the dropdown menu."}
+          {
+            "Search failed, please enter a city and select it from the dropdown menu."
+          }
         </div>
       )}
 
@@ -201,11 +208,35 @@ const HotelsPage = () => {
               <option value="asc">Price: Low to High</option>
               <option value="desc">Price: High to Low</option>
             </select>
+            <div className="mt-2">
+              <label>Check In Date</label>
+              <DatePicker
+                selected={checkInDate}
+                onChange={(date) => setCheckInDate(date)}
+                dateFormat={"yyyy-MM-dd"}
+              />
+              <label>Check Out Date</label>
+              <DatePicker
+                selected={checkOutDate}
+                onChange={(date) => setCheckOutDate(date)}
+                dateFormat={"yyyy-MM-dd"}
+              />
+            </div>
+            <label className="mr-2">Adults</label>
+            <select
+              value={adults}
+              onChange={(e) => setAdults(Number(e.target.value))}
+              className="p-2 border rounded"
+            >
+              {[...Array(10).keys()].map((num) => (
+                <option key={num + 1} value={num + 1}>
+                  {num + 1}
+                </option>
+              ))}
+            </select>
           </div>
 
-          
           <div className="flex items-center justify-center">
-            
             <button
               className="bg-black text-white p-3 rounded-full"
               onClick={handleSearch}
