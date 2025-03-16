@@ -15,11 +15,31 @@ const logHotelData = (hotels) => {
   });
 };
 
+
+// Function to filter out hotels with no rooms available or invalid property codes
+const filterAvailableHotels = (hotelsData) => {
+  return hotelsData.filter((hotel) => {
+    // Check for error codes and filter them out
+    if (hotel.errors) {
+      hotel.errors.forEach(error => {
+        console.error(`Error for hotel ${hotel.hotelId}:`, error.detail);
+      });
+    }
+    return !hotel.errors || !hotel.errors.some(error => 
+      errorCodes.includes('3664') ||
+      errorCodes.includes('1257') ||
+      errorCodes.includes('1351') || 
+      errorCodes.includes('11')
+    );
+  });
+};
+
 // This function queries the API to access hotel search data
 // Removed useState and useEffect hooks from this function
 const hotelSearch = async ({
   accessToken,
-  cityCode,
+  longitude,
+  latitude,
   radius,
   setHotels,
   setError,
@@ -28,18 +48,20 @@ const hotelSearch = async ({
     // Log the parameters to confirm they're correctly passed
     console.log("Inside hotelSearch with params:", {
       accessToken,
-      cityCode,
+      longitude,
+      latitude,
       radius,
     });
 
     const params = {
-      cityCode, // e.g., "NYC" or "NCE"
+      longitude,
+      latitude,
       radius, // Example: radius 1 kilometer
       radiusUnit: "MILE", // Unit for radius - 'KM' or 'MILE'
     };
 
     const url = new URL(
-      "https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city"
+      "https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-geocode"
     );
     Object.keys(params).forEach((key) =>
       url.searchParams.append(key, params[key])
@@ -75,7 +97,6 @@ const hotelSearch = async ({
 //   name: hotel.name
 // }));
 
-// searches api with all hotelids gotten from the search by the city
 // searches API with all hotelIds gotten from the search by the city
 const getHotelSearchResults = async (
   hotels,
@@ -86,6 +107,10 @@ const getHotelSearchResults = async (
   setError
 ) => {
   console.log("Start of getHotelSearchResults");
+  
+  // console.log("Filtered hotels before filtering:", hotels);
+  // const availableHotels = filterAvailableHotels(hotels);
+  // console.log("Available hotels after filtering:", availableHotels);
 
   try {
     const hotelIds = hotels
@@ -138,18 +163,20 @@ const getHotelSearchResults = async (
       });
 
       if (!response.ok) {
+        console.log("Filtering failed, ", [chunks[i]]);
         const errorText = await response.text();
         console.error("Error response from hotel search by IDs:", errorText);
         throw new Error(
           `Failed to fetch hotels by IDs from Amadeus API: ${errorText}`
         );
       }
-
+      
       const data = await response.json();
       console.log(`Fetched hotel details for chunk ${i + 1}:`, data);
+      // const availableHotels = filterAvailableHotels(data.data);
 
       // Append the results of this batch to filteredHotels
-      filteredHotels = [...filteredHotels, ...data.data]; // Assuming 'data.data' contains the hotels
+      filteredHotels = [...filteredHotels, ...data.data];
     }
 
     // Set the final filtered hotels after all batches are fetched
