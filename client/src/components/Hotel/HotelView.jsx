@@ -8,6 +8,8 @@ const HotelView = () => {
   const location = useLocation();
   const [images, setImages] = useState([]);
   const [hotelData, setHotelData] = useState(location.state?.hotel || {});
+  const [tripsList, setTripList] = useState([]);
+  const [selectedTrip, setSelectedTrip] = useState({});
 
   useEffect(() => {
     if (location.state?.hotel) {
@@ -15,7 +17,53 @@ const HotelView = () => {
       console.log("Good state");
       console.log(location.state.hotel);
     }
+    getTrips(user.email);
   }, [location.state]);
+
+  const getTrips = async (email) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/gettrips", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (!response.ok) {
+        throw new Error("Error getting users trips");
+      }
+      const json = await response.json();
+      setTripList(json.trips);
+      console.log(json);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleAdd = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/addhotel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: user.email,
+          tripName: selectedTrip.tripName,
+          hotel: {
+            name: hotelData.hotel.name,
+            city: hotelData.hotel.cityCode,
+            checkIn: hotelData.offers[0].checkInDate,
+            checkOut: hotelData.offers[0].checkOutDate,
+          },
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Error adding hotel to trip");
+      }
+      console.log("sucessfully added");
+    } catch (error) {
+      console.log("Error adding hotel to trip");
+    }
+  };
 
   //   useEffect(() => {
   //     if (hotelData.hotel.name) {
@@ -38,19 +86,38 @@ const HotelView = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-4">{hotelData.hotel.name}</h1>
-      <p className="text-lg mb-2">
-        <span className="font-semibold">Room Type:</span> {hotelData.roomType}
+      <h1 className="text-4xl font-bold mb-6">{hotelData.hotel.name}</h1>
+      <p className="text-xl mb-4">
+        <span className="font-semibold"></span>{" "}
+        {hotelData.offers[0].room.description.text}
       </p>
-      <p className="text-lg mb-2">
-        <span className="font-semibold">Price:</span> {hotelData.price}
+      <p className="text-xl mb-4">
+        <span className="font-semibold">Price:</span> $
+        {hotelData.offers[0].price.base}
       </p>
-      <p className="text-lg mb-4">
-        <span className="font-semibold">Cancellation Policy:</span>{" "}
-        {hotelData.cancellationPolicy}
-      </p>
-      <select className="mb-4 p-2 border rounded"></select>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <select
+        className="mb-6 p-3 border rounded"
+        value={selectedTrip}
+        onChange={(e) => setSelectedTrip(e.target.value)}
+      >
+        {tripsList.map((trip, index) => (
+          <option key={index} value={trip.tripName}>
+            {trip.tripName}
+          </option>
+        ))}
+      </select>
+      <button className="ml-2 bg-blue-500 text-white" onClick={handleAdd}>
+        Add to itinerary
+      </button>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {Array.from({ length: 10 }).map((_, index) => (
+          <img
+            key={index}
+            src="https://cache.marriott.com/is/image/marriotts7prod/br-seasm-exterior-signage-84882:Wide-Hor?wid=375&fit=constrain"
+            alt={`Hotel view ${index + 1}`}
+            className="w-full h-auto rounded shadow-lg"
+          />
+        ))}
         {/* {images.map((image) => (
           <img
             key={image.link}

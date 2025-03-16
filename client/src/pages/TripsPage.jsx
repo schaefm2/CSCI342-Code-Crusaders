@@ -4,6 +4,7 @@ import CreateTrip from "../components/Trip/CreateTrip";
 import Trips from "../components/Trip/Trips";
 import { NavLink } from "react-router-dom";
 import ItinView from "../components/Itinerary/ItinView";
+import { div } from "prelude-ls";
 
 const TripsPage = () => {
   const { user } = useSelector((state) => state.auth);
@@ -48,28 +49,30 @@ const TripsPage = () => {
         <div className="flex">
           <div className="p-4 cursor-pointer">
             {tripList && tripList.length > 0 ? (
-              tripList.map((trip, index) => (
-                <div
-                  key={index}
-                  className="bg-white shadow-md rounded-lg p-4 mb-4 cursor-pointer"
-                  onClick={() => {
-                    setCreatingTrip(false);
-                    setDisplayedItin(trip);
-                  }}
+              <div>
+                {tripList.map((trip, index) => (
+                  <div
+                    key={index}
+                    className="bg-white shadow-md rounded-lg p-4 mb-4 cursor-pointer"
+                    onClick={() => {
+                      setCreatingTrip(false);
+                      setDisplayedItin(trip);
+                    }}
+                  >
+                    <h3 className="text-xl font-semibold">{trip.tripName}</h3>
+                    <p className="text-gray-600">{trip.startDate}</p>
+                  </div>
+                ))}
+                <button
+                  className="bg-blue-500 text-white shadow"
+                  onClick={handleCreateTrip} // Updated to use handleCreateTrip
                 >
-                  <h3 className="text-xl font-semibold">{trip.tripName}</h3>
-                  <p className="text-gray-600">{trip.startDate}</p>
-                </div>
-              ))
+                  Create Trip
+                </button>
+              </div>
             ) : (
               <CreateTrip setCreatingTrip={setCreatingTrip} />
             )}
-            <button
-              className="bg-blue-500 text-white shadow"
-              onClick={handleCreateTrip} // Updated to use handleCreateTrip
-            >
-              Create Trip
-            </button>
           </div>
           {creatingTrip ? (
             <CreateTrip setCreatingTrip={setCreatingTrip} />

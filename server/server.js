@@ -48,12 +48,8 @@ const flightSchema = new mongoose.Schema({
 const hotelSchema = new mongoose.Schema({
   name: { type: String, required: true },
   city: { type: String, required: true },
-  latitude: { type: Number, required: true },
-  longitude: { type: Number, required: true },
-  distance: { type: Number, required: true },
   checkIn: { type: String, required: true },
   checkOut: { type: String, required: true },
-  address: { type: String, required: true },
 });
 
 const eventSchema = new mongoose.Schema({
