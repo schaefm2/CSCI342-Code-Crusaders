@@ -25,6 +25,7 @@ export const authSlice = createSlice({
     login: (state, action) => {
       state.user = action.payload;
       state.loaded = true;
+      //state.user = { ...state.user, ...action.payload };
     },
     // logout action
     // The logout action resets the user state to initialUserState and sets loaded to false, reflecting that the user has logged out and no user data should be considered loaded.

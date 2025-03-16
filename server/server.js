@@ -172,6 +172,31 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+// DOESNT FULLY WORK YET
+app.put("/api/account/:email", async (req, res) => {
+  try {
+    const email = req.params.email;
+    const updateData = req.body;
+
+    // find user by email and update
+    const updatedUser = await User.findOneAndUpdate(
+      { email: email },  updateData, { new: true, runValidators: true }
+    );
+
+    console.log("updated user: ", updatedUser);
+
+    if (!updatedUser) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    res.status(201).json("user updated successfully");
+
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ message: "Server error updating user" });
+  }
+})
+
 app.post("/api/getuser", async (req, res) => {});
 
 //create trip
