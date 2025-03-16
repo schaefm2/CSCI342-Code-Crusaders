@@ -7,6 +7,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { late } = require("zod");
 const { add } = require("lodash");
+const { check } = require("yargs");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -51,6 +52,9 @@ const hotelSchema = new mongoose.Schema({
   latitude: { type: Number, required: true },
   longitude: { type: Number, required: true },
   distance: { type: Number, required: true },
+  checkIn: { type: String, required: true },
+  checkOut: { type: String, required: true },
+  address: { type: String, required: true },
 });
 
 const eventSchema = new mongoose.Schema({
