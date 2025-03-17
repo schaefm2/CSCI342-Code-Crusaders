@@ -8,7 +8,7 @@ const HotelList = ({ hotels }) => {
   }, [hotels]);
   return (
     <div className="flex flex-wrap gap-4">
-      {hotelList.map((hotel, index) => {
+      {hotelList.slice(0, 4).map((hotel, index) => {
         return (
           <div key={index} className="flex-1 min-w-[calc(25%-16px)] box-border">
             <Hotel hotel={hotel} />

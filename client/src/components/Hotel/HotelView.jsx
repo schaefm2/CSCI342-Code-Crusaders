@@ -33,6 +33,9 @@ const HotelView = () => {
       const json = await response.json();
       setTripList(json.trips);
       console.log(json);
+      if (json.trips.length > 0) {
+        setSelectedTrip(json.trips[0].tripName);
+      }
     } catch (error) {
       console.log(error.message);
     }
@@ -78,56 +81,24 @@ const HotelView = () => {
     }
   };
 
-  // const addCheckInandOut = async () => {
-  //   const checkInActivity = {
-  //     name: "Check In to Hotel",
-  //     description: "Check in to " + hotelData.hotel.name,
-  //   };
+  useEffect(() => {
+    if (hotelData.hotel.name) {
+      const fetchImages = async () => {
+        try {
+          const response = await fetch(
+            `https://www.googleapis.com/customsearch/v1?q=${hotelData.hotel.name}&cx=3671b3f45ec244689&searchType=image&key=AIzaSyDr1PZL1FtszKOJWE8ju-oN7nbAQtNFyWs`
+          );
+          const data = await response.json();
+          console.log(data);
+          setImages(data.items);
+        } catch (error) {
+          console.error("Error fetching images:", error);
+        }
+      };
 
-  //   try {
-  //     // Add event to the backend
-  //     const response = await fetch("http://localhost:3000/api/addevent", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         email: itineraryData.email,
-  //         tripName: itineraryData.tripName,
-  //         event: {
-  //           ...newActivity,
-  //           day: itineraryData.days[dayIndex].date,
-  //         },
-  //       }),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Failed to add event");
-  //     }
-  //     console.log("Event added successfully:", newActivity);
-  //   } catch (error) {
-  //     console.error("Error adding event:", error);
-  //   }
-  // };
-
-  //   useEffect(() => {
-  //     if (hotelData.hotel.name) {
-  //       const fetchImages = async () => {
-  //         try {
-  //           const response = await fetch(
-  //             `https://www.googleapis.com/customsearch/v1?q=${hotelData.hotel.name}&cx=3671b3f45ec244689&searchType=image&key=AIzaSyDr1PZL1FtszKOJWE8ju-oN7nbAQtNFyWs`
-  //           );
-  //           const data = await response.json();
-  //           console.log(data);
-  //           setImages(data.items);
-  //         } catch (error) {
-  //           console.error("Error fetching images:", error);
-  //         }
-  //       };
-
-  //       fetchImages();
-  //     }
-  //   }, [location.state]);
+      fetchImages();
+    }
+  }, [location.state]);
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -155,22 +126,22 @@ const HotelView = () => {
         Add to itinerary
       </button>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {Array.from({ length: 10 }).map((_, index) => (
+        {/* {Array.from({ length: 10 }).map((_, index) => (
           <img
             key={index}
             src="https://cache.marriott.com/is/image/marriotts7prod/br-seasm-exterior-signage-84882:Wide-Hor?wid=375&fit=constrain"
             alt={`Hotel view ${index + 1}`}
             className="w-full h-auto rounded shadow-lg"
           />
-        ))}
-        {/* {images.map((image) => (
+        ))} */}
+        {images.map((image) => (
           <img
             key={image.link}
             src={image.link}
             alt={image.title}
             className="w-full h-auto rounded shadow-md"
           />
-        ))} */}
+        ))}
       </div>
     </div>
   );

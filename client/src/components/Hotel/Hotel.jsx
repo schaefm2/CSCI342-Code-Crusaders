@@ -4,24 +4,24 @@ import { Link } from "react-router-dom";
 
 const Hotel = ({ hotel }) => {
   const [image, setImage] = useState(null);
-  // useEffect(() => {
-  //   if (hotel.hotel.name) {
-  //     const fetchImages = async () => {
-  //       try {
-  //         const response = await fetch(
-  //           `https://www.googleapis.com/customsearch/v1?q=${hotel.hotel.name}&cx=3671b3f45ec244689&searchType=image&key=AIzaSyDr1PZL1FtszKOJWE8ju-oN7nbAQtNFyWs`
-  //         );
-  //         const data = await response.json();
-  //         console.log(data);
-  //         setImage(data.items[0]);
-  //       } catch (error) {
-  //         console.error("Error fetching images:", error);
-  //       }
-  //     };
+  useEffect(() => {
+    if (hotel.hotel.name) {
+      const fetchImages = async () => {
+        try {
+          const response = await fetch(
+            `https://www.googleapis.com/customsearch/v1?q=${hotel.hotel.name}&cx=3671b3f45ec244689&searchType=image&key=AIzaSyDr1PZL1FtszKOJWE8ju-oN7nbAQtNFyWs`
+          );
+          const data = await response.json();
+          console.log(data);
+          setImage(data.items[0]);
+        } catch (error) {
+          console.error("Error fetching images:", error);
+        }
+      };
 
-  //     fetchImages();
-  //   }
-  // }, [hotel]);
+      fetchImages();
+    }
+  }, [hotel]);
 
   const handleAddHotel = (hotel) => {
     // TODO: Add rest of logic here to add to itinerary
@@ -39,23 +39,22 @@ const Hotel = ({ hotel }) => {
           <p className="text-lg font-bold">${hotel.offers[0].price.base}</p>
         </div> */}
 
-        {/* {image && (
-         <img
-           src={image.link}
-           alt={hotel.hotel.name}
-           className="w-full h-40 object-cover"
-         />
-       )} */}
-
         <div className="p-2">
           <div className="flex justify-between ">
             <ul className="font-semibold">{hotel?.hotel?.name}</ul>
           </div>
-          <img
+          {/* <img
             className="w-full h-30"
             src="https://cache.marriott.com/is/image/marriotts7prod/br-seasm-exterior-signage-84882:Wide-Hor?wid=375&fit=constrain"
             alt=""
-          />
+          /> */}
+          {image && (
+            <img
+              src={image.link}
+              alt={hotel.hotel.name}
+              className="w-full h-30"
+            />
+          )}
           <div className="flex justify-between mt-2">
             <p className="text-lg font-bold">${hotel.offers[0].price.base}</p>
           </div>
