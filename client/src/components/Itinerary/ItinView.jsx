@@ -210,6 +210,34 @@ const ItinView = ({ itinerary }) => {
                   </td>
                 </tr>
               ))}
+              {itineraryData.hotels.map((hotel, hotelIndex) => (
+                <>
+                  {hotel.checkIn === day.date && (
+                    <tr key={`checkin-${hotelIndex}`} className="border-b">
+                      <td className="py-2 pr-4 text-sm text-gray-500">
+                        Check-in
+                      </td>
+                      <td className="py-2">
+                        <strong className="block text-lg">{hotel.name}</strong>
+                        <p className="mt-1">Check-in at {hotel.checkIn}</p>
+                        <p className="text-sm text-gray-400">{hotel.address}</p>
+                      </td>
+                    </tr>
+                  )}
+                  {hotel.checkOut === day.date && (
+                    <tr key={`checkout-${hotelIndex}`} className="border-b">
+                      <td className="py-2 pr-4 text-sm text-gray-500">
+                        Check-out
+                      </td>
+                      <td className="py-2">
+                        <strong className="block text-lg">{hotel.name}</strong>
+                        <p className="mt-1">Check-out at {hotel.checkOut}</p>
+                        <p className="text-sm text-gray-400">{hotel.address}</p>
+                      </td>
+                    </tr>
+                  )}
+                </>
+              ))}
             </tbody>
           </table>
         </div>
