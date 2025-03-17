@@ -11,6 +11,7 @@ const CreateTrip = ({ setCreatingTrip }) => {
     { place: "", startDate: new Date(), endDate: new Date() },
   ]);
   const [trip, setTrip] = useState({ title: "", locations: locations });
+  const [loading, setLoading] = useState(false);
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -50,6 +51,7 @@ const CreateTrip = ({ setCreatingTrip }) => {
   };
 
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:3000/api/trip", {
@@ -74,6 +76,8 @@ const CreateTrip = ({ setCreatingTrip }) => {
       setCreatingTrip(false);
     } catch (error) {
       console.error("Error creating trip:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -81,6 +85,7 @@ const CreateTrip = ({ setCreatingTrip }) => {
     <form
       className="bg-white shadow p-10 max-w-3xl mx-auto"
       onSubmit={handleSubmit}
+      disabled={loading}
     >
       <input
         className="bg-gray-100 p-2 rounded-full shadow w-full mb-4"
