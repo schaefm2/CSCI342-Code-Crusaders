@@ -9,7 +9,7 @@ const HotelView = () => {
   const [images, setImages] = useState([]);
   const [hotelData, setHotelData] = useState(location.state?.hotel || {});
   const [tripsList, setTripList] = useState([]);
-  const [selectedTrip, setSelectedTrip] = useState({});
+  const [selectedTrip, setSelectedTrip] = useState("");
 
   useEffect(() => {
     if (location.state?.hotel) {
@@ -39,6 +39,13 @@ const HotelView = () => {
   };
 
   const handleAdd = async () => {
+    if (!selectedTrip) {
+      console.log("Please select a trip");
+      return;
+    }
+
+    console.log("Selected trip:", selectedTrip);
+    console.log("Hotel data:", hotelData);
     try {
       const response = await fetch("http://localhost:3000/api/addhotel", {
         method: "POST",
@@ -57,14 +64,17 @@ const HotelView = () => {
         }),
       });
       if (!response.ok) {
-        throw new Error("Error adding hotel to trip");
+        const errorText = await response.text();
+        throw new Error(
+          `Error adding hotel to trip: ${response.status} ${response.statusText} - ${errorText}`
+        );
       }
       const result = await response.json();
       console.log(result.message);
       console.log(result.trip);
       console.log("Successfully added");
     } catch (error) {
-      console.log("Error adding hotel to trip");
+      console.log("Error adding hotel to trip:", error.message);
     }
   };
 

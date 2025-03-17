@@ -281,7 +281,10 @@ app.post("/api/addhotel", authenticateJWT, async (req, res) => {
       .status(200)
       .json({ message: "hotel added successfully", trip: updatedTrip });
   } catch (error) {
-    return res.status(500).json({ message: "error adding hotel" });
+    console.error("Error adding hotel:", error);
+    return res
+      .status(500)
+      .json({ message: `Error adding hotel: ${error.message}` });
   }
 });
 //delete hotel from trip

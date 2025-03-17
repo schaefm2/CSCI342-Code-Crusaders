@@ -52,26 +52,58 @@ const CreateTrip = ({ setCreatingTrip }) => {
 
   const handleSubmit = async (e) => {
     setLoading(true);
+    setCreatingTrip(true);
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/api/trip", {
-        email: user.email,
-        tripName: trip.title,
-        startDate: locations[0].startDate.toISOString().split("T")[0],
-        endDate: locations[locations.length - 1].endDate
-          .toISOString()
-          .split("T")[0],
-        days: locations.map((location) => ({
-          location: location.place,
-          date: location.startDate.toISOString().split("T")[0],
-          events: [],
-        })),
-        flights: [],
-        hotels: [],
+      const days = [];
+      locations.forEach((location) => {
+        const current = new Date(location.startDate);
+        const end = new Date(location.endDate);
+        while (current <= end) {
+          console.log(
+            `Adding day for location: ${location.place} on date: ${
+              current.toISOString().split("T")[0]
+            }`
+          );
+          days.push({
+            location: location.place,
+            date: new Date(current.getTime() - 1 * 24 * 60 * 60 * 1000)
+              .toISOString()
+              .split("T")[0],
+            events: [],
+          });
+          current.setDate(current.getDate() + 1);
+        }
       });
 
-      if (response.status !== 201) {
-        throw new Error(response.data.message || "Something went wrong");
+      const response = await fetch("http://localhost:3000/api/trip", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: user.email,
+          tripName: trip.title,
+          startDate: new Date(
+            locations[0].startDate.getTime() - 1 * 24 * 60 * 60 * 1000
+          )
+            .toISOString()
+            .split("T")[0],
+          endDate: new Date(
+            locations[locations.length - 1].endDate.getTime() -
+              1 * 24 * 60 * 60 * 1000
+          )
+            .toISOString()
+            .split("T")[0],
+          days: days,
+          flights: [],
+          hotels: [],
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Something went wrong");
       }
       setCreatingTrip(false);
     } catch (error) {

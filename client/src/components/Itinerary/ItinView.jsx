@@ -170,6 +170,25 @@ const ItinView = ({ itinerary }) => {
           </div>
         ))}
       </div>
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold mb-2">Flights</h2>
+        {itineraryData.flights.map((flight, index) => (
+          <div key={index} className="mb-4">
+            <h3 className="text-xl font-semibold">Flight {index + 1}</h3>
+            <p>
+              Departure: {flight.departure} at {flight.departureTime} on{" "}
+              {flight.departureDate}
+            </p>
+            <p>
+              Arrival: {flight.arrival} at {flight.arrivalTime} on{" "}
+              {flight.arrivalDate}
+            </p>
+            <p>
+              Price: {flight.price} {flight.currency}
+            </p>
+          </div>
+        ))}
+      </div>
       {itineraryData.days.map((day, index) => (
         <div key={index} className="mb-8">
           <h2 className="text-2xl font-semibold mb-2">
