@@ -47,7 +47,7 @@ const HotelView = () => {
         },
         body: JSON.stringify({
           email: user.email,
-          tripName: selectedTrip.tripName,
+          tripName: selectedTrip,
           hotel: {
             name: hotelData.hotel.name,
             city: hotelData.hotel.cityCode,
@@ -59,11 +59,46 @@ const HotelView = () => {
       if (!response.ok) {
         throw new Error("Error adding hotel to trip");
       }
-      console.log("sucessfully added");
+      const result = await response.json();
+      console.log(result.message);
+      console.log(result.trip);
+      console.log("Successfully added");
     } catch (error) {
       console.log("Error adding hotel to trip");
     }
   };
+
+  // const addCheckInandOut = async () => {
+  //   const checkInActivity = {
+  //     name: "Check In to Hotel",
+  //     description: "Check in to " + hotelData.hotel.name,
+  //   };
+
+  //   try {
+  //     // Add event to the backend
+  //     const response = await fetch("http://localhost:3000/api/addevent", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         email: itineraryData.email,
+  //         tripName: itineraryData.tripName,
+  //         event: {
+  //           ...newActivity,
+  //           day: itineraryData.days[dayIndex].date,
+  //         },
+  //       }),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to add event");
+  //     }
+  //     console.log("Event added successfully:", newActivity);
+  //   } catch (error) {
+  //     console.error("Error adding event:", error);
+  //   }
+  // };
 
   //   useEffect(() => {
   //     if (hotelData.hotel.name) {

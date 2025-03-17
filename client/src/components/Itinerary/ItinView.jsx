@@ -159,6 +159,17 @@ const ItinView = ({ itinerary }) => {
       <p className="text-lg mb-6">
         {itineraryData.startDate} - {itineraryData.endDate}
       </p>
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold mb-2">Hotels</h2>
+        {itineraryData.hotels.map((hotel, index) => (
+          <div key={index} className="mb-4">
+            <h3 className="text-xl font-semibold">{hotel.name}</h3>
+            <p>{hotel.city}</p>
+            <p>Check-in: {hotel.checkIn}</p>
+            <p>Check-out: {hotel.checkOut}</p>
+          </div>
+        ))}
+      </div>
       {itineraryData.days.map((day, index) => (
         <div key={index} className="mb-8">
           <h2 className="text-2xl font-semibold mb-2">
