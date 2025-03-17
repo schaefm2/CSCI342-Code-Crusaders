@@ -7,19 +7,22 @@ import { useAccessToken } from "../components/AccessTokenContext/AccessTokenCont
 import flightSearch from "../components/FlightData/FlightData.jsx";
 import { formatProdErrorMessage } from "@reduxjs/toolkit";
 import { computedTypesResolver } from "@hookform/resolvers/computed-types";
+import { useSelector } from "react-redux";
 
 const FlightsPage = () => {
   const [oneWay, setOneWay] = useState(false);
   const { accessToken, loading } = useAccessToken();
 
-  const [originState, setOrigin] = useState('');
-  const [destinationState, setDestination] = useState('');
-  const [departureDateState, setDepartureDate] = useState(new Date('2025-01-02'));
-  const [returnDateState, setReturnDate] = useState(new Date('2025-01-03'));
-  const [adultsState, setAdults] = useState('1');
-  const [maxPriceState, setMaxPrice] = useState('499');
-  const [currencyCodeState, setCurrencyCode] = useState('USD');
-  const [currencySymbol, setCurrencySymbol] = useState('$')
+  const [originState, setOrigin] = useState("");
+  const [destinationState, setDestination] = useState("");
+  const [departureDateState, setDepartureDate] = useState(
+    new Date("2025-01-02")
+  );
+  const [returnDateState, setReturnDate] = useState(new Date("2025-01-03"));
+  const [adultsState, setAdults] = useState("1");
+  const [maxPriceState, setMaxPrice] = useState("499");
+  const [currencyCodeState, setCurrencyCode] = useState("USD");
+  const [currencySymbol, setCurrencySymbol] = useState("$");
 
   const [flights, setFlights] = useState([]);
   const [filteredFlights, setFilteredFlights] = useState([]);
@@ -33,18 +36,50 @@ const FlightsPage = () => {
 
   const [searchPerformed, setSearchPerformed] = useState(false);
 
+  const [tripList, setTripList] = useState([]);
+  const [selectedTrip, setSelectedTrip] = useState({});
+  const { user } = useSelector((state) => state.auth);
+
+  //FUNCTIONS TO ADD TO ITINERARY
+
+  useEffect(() => {
+    if (location.state?.hotel) {
+      setHotelData(location.state.hotel);
+      console.log("Good state");
+      console.log(location.state.hotel);
+    }
+    getTrips(user.email);
+  }, [location.state]);
+
+  const getTrips = async (email) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/gettrips", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (!response.ok) {
+        throw new Error("Error getting users trips");
+      }
+      const json = await response.json();
+      setTripList(json.trips);
+      console.log(json);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   // Format to 'YYYY-MM-DD' but not needed if doing it directly in useStates
   // const formattedDepartureDate = departureDateState.toISOString().split('T')[0];
-  // const formattedReturnDate = returnDateState.toISOString().split('T')[0]; 
+  // const formattedReturnDate = returnDateState.toISOString().split('T')[0];
 
   const sortFlightsByPrice = (flights, order) => {
     const flightsCopy = [...flights];
 
     // use a shallow copy and then sort it based on price
     return flightsCopy.sort((a, b) => {
-      const priceA = Number(a.price.base);  
-      const priceB = Number(b.price.base);  
+      const priceA = Number(a.price.base);
+      const priceB = Number(b.price.base);
 
       if (order === "asc") {
         return priceA - priceB;
@@ -54,16 +89,17 @@ const FlightsPage = () => {
     });
   };
 
-
   // this is used if the checkbox is selected so that only flights from selected airports are shown
   const filterFlightsByDirectMatch = (flights) => {
-    return flights.filter(flight => {
-      const departureAirport = flight.itineraries[0].segments[0].departure.iataCode;
+    return flights.filter((flight) => {
+      const departureAirport =
+        flight.itineraries[0].segments[0].departure.iataCode;
       const arrivalAirport = flight.itineraries[0].segments[0].arrival.iataCode;
-      return departureAirport === originState && arrivalAirport === destinationState;
+      return (
+        departureAirport === originState && arrivalAirport === destinationState
+      );
     });
   };
-
 
   // Apply sorting whenever flights or sortOrder changes
   useEffect(() => {
@@ -134,17 +170,24 @@ const FlightsPage = () => {
     setFlights([]);
     setFilteredFlights([]);
 
-    
     // if (oneWay) {  // if one way send nothing for return date
     //   console.log("One way detected in handleSearch, setting returnDate to empty")
     //   setReturnDate('');
     // }
 
-    console.log(`None formatted depart date: ${departureDateState}  with formatted return date: ${returnDateState}`)
+    console.log(
+      `None formatted depart date: ${departureDateState}  with formatted return date: ${returnDateState}`
+    );
 
-    const formattedDepartureDate = setDateToMidnight(departureDateState).toISOString().split('T')[0]; // Format to 'YYYY-MM-DD'
-    const formattedReturnDate = setDateToMidnight(returnDateState).toISOString().split('T')[0]; // Format to 'YYYY-MM-DD'
-    console.log(`Formatted depart date: ${formattedDepartureDate}  with formatted return date: ${formattedReturnDate}`)
+    const formattedDepartureDate = setDateToMidnight(departureDateState)
+      .toISOString()
+      .split("T")[0]; // Format to 'YYYY-MM-DD'
+    const formattedReturnDate = setDateToMidnight(returnDateState)
+      .toISOString()
+      .split("T")[0]; // Format to 'YYYY-MM-DD'
+    console.log(
+      `Formatted depart date: ${formattedDepartureDate}  with formatted return date: ${formattedReturnDate}`
+    );
 
     // Slice here to get last 5 characters which are the airport code: (###)
     // const originAirport = originRef.current.value.slice(-5);
@@ -153,12 +196,15 @@ const FlightsPage = () => {
     const originAirport = originRef.current.value.slice(-4, -1);
     const destinationAirport = destinationRef.current.value.slice(-4, -1);
 
-    console.log(`Departure airport: ${originAirport}    Destination airport: ${destinationAirport}`)
+    console.log(
+      `Departure airport: ${originAirport}    Destination airport: ${destinationAirport}`
+    );
 
     setOrigin(originAirport);
     setDestination(destinationAirport);
-    console.log(`Updated Departure state airport: ${originAirport}    Updated Destination state airport: ${destinationAirport}`);
-
+    console.log(
+      `Updated Departure state airport: ${originAirport}    Updated Destination state airport: ${destinationAirport}`
+    );
 
     flightSearch({
       accessToken,
@@ -173,17 +219,18 @@ const FlightsPage = () => {
       currencyCode: currencyCodeState,
       setFlights,
       setError,
-      oneWay
+      oneWay,
     })
+      .catch((err) => {
+        setError(
+          "Please enter valid airport codes or cities for both destinations"
+        );
+        console.log(err);
+      })
 
-    .catch((err) => {
-      setError("Please enter valid airport codes or cities for both destinations");
-      console.log(err);
-    })
-
-    .finally(() => {
-      setLoadingSearch(false);
-    });
+      .finally(() => {
+        setLoadingSearch(false);
+      });
 
     console.log(flights);
 
@@ -196,53 +243,74 @@ const FlightsPage = () => {
     return null;
   };
 
-  const handleAddFlight = (flight) => {
+  const handleAddFlight = async (flight) => {
     // TODO: Add rest of logic here to add to itinerary
-    console.log('Flight added by add button:', flight);
+    console.log("Flight added by add button:", flight);
+    console.log("Selected Trip:", selectedTrip);
+    try{
+      const response = await fetch("http://localhost:3000/api/addflight", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: user.email,
+          tripName: selectedTrip,
+          flight: {
+            departure:flight.itineraries[0].segments[0].departure.iataCode,
+            arrival:flight.itineraries[0].segments[0].arrival.iataCode,
+            departureTime:flight.itineraries[0].segments[0].departure.at,
+            departureDate:flight.itineraries[0].segments[0].departure.at,
+            arrivalTime:flight.itineraries[0].segments[0].arrival.at,
+            arrivalDate:flight.itineraries[0].segments[0].arrival.at,
+            price:flight.price.base,
+            currency:flight.price.currency,
+          },
+        }),
+      });
   
-  };
-  
+      if (!response.ok) {
+        throw new Error("Error adding flight to trip");
+      }
+      const result = await response.json();
+      console.log(result.message);
 
-  
+    }catch(error){
+      console.log("Error adding flight to trip:", error);
+    }
+
+  };
+
   return (
     <div className="flex flex-col items-center mt-10">
-
       {/* Show error message if there is an error during handling search*/}
       {error && (
         <div className="text-red-500 mb-4 font-semibold">
-          {"Search failed, please enter two valid airport codes or cities from the auto complete options and dates that are in the future"}
+          {
+            "Search failed, please enter two valid airport codes or cities from the auto complete options and dates that are in the future"
+          }
         </div>
       )}
 
       <div className="flex flex-row items-center justify-center">
-        
         <div className="relative">
-            <AirportSearch 
-              placeholder="From" 
-              ref={originRef}
-            />
-            {/* Autocomplete suggestions for "From" */}
-            <div className="absolute top-full mt-2 bg-white shadow-lg rounded-md max-h-40 overflow-auto w-full z-10">
-              {/* Render suggestions here */}
-            </div>
-          </div>
-          {renderArrow()}
-          <div className="relative">
-            <AirportSearch 
-              placeholder="To" 
-              ref={destinationRef}
-            />
-            {/* Autocomplete suggestions for "To" */}
-            <div className="absolute top-full mt-2 bg-white shadow-lg rounded-md max-h-40 overflow-auto w-full z-10">
-              {/* Render suggestions here */}
-            </div>
+          <AirportSearch placeholder="From" ref={originRef} />
+          {/* Autocomplete suggestions for "From" */}
+          <div className="absolute top-full mt-2 bg-white shadow-lg rounded-md max-h-40 overflow-auto w-full z-10">
+            {/* Render suggestions here */}
           </div>
         </div>
-
-
+        {renderArrow()}
+        <div className="relative">
+          <AirportSearch placeholder="To" ref={destinationRef} />
+          {/* Autocomplete suggestions for "To" */}
+          <div className="absolute top-full mt-2 bg-white shadow-lg rounded-md max-h-40 overflow-auto w-full z-10">
+            {/* Render suggestions here */}
+          </div>
+        </div>
+      </div>
 
       <div className="px-4 flex flex-row items-center justify-center">
-
         <div className="flex flex-col items-center p-4">
           <label className="mb-2 text-lg font-semibold">Departing</label>
           <DatePicker
@@ -265,7 +333,9 @@ const FlightsPage = () => {
 
         {/* Uses an input spinner to only allow users to set the number from 1-9 */}
         <div className="flex flex-col items-center p-4">
-          <label className="mb-2 text-lg font-semibold">Number of Tickets</label>
+          <label className="mb-2 text-lg font-semibold">
+            Number of Tickets
+          </label>
           <input
             type="number"
             min="1"
@@ -281,11 +351,13 @@ const FlightsPage = () => {
             className="w-full p-2 rounded-full border"
           />
         </div>
-
       </div>
 
       <div className="flex items-center justify-center">
-        <button className="bg-black text-white p-2 rounded-full" onClick={handleSearch}>
+        <button
+          className="bg-black text-white p-2 rounded-full"
+          onClick={handleSearch}
+        >
           Search Flights
         </button>
 
@@ -311,7 +383,9 @@ const FlightsPage = () => {
 
       {/* Sorting by Price Dropdown menu */}
       <div className="mt-6">
-        <label htmlFor="sortOrder" className="mr-4 text-lg">Sort by Price:</label>
+        <label htmlFor="sortOrder" className="mr-4 text-lg">
+          Sort by Price:
+        </label>
         <select
           id="sortOrder"
           value={sortOrder}
@@ -322,32 +396,69 @@ const FlightsPage = () => {
           <option value="desc">Price: High to Low</option>
         </select>
       </div>
+        {/*trip dropdown here*/}
+      <div className="mt-6">
+        <select
+          className="mb-6 p-3 border rounded"
+          value={selectedTrip}
+          onChange={(e) => {
+            setSelectedTrip(e.target.value)
+            console.log(e.target.value)
+          }}
+        >
+          {tripList.map((trip, index) => (
+            <option key={index} value={trip.tripName}>
+              {trip.tripName}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <div className="w-full mt-10 flex justify-center">
         <div className="w-1/2">
-          {searchPerformed && !loadingSearch && error===null && filteredFlights.length === 0 ? (
+          {searchPerformed &&
+          !loadingSearch &&
+          error === null &&
+          filteredFlights.length === 0 ? (
             <div className="text-center text-red-500 font-semibold">
               No available flights on specified days and airports.
             </div>
           ) : (
             filteredFlights.map((flight, index) => {
-              const departureAirport = flight.itineraries[0].segments[0].departure.iataCode;
-              const departureTime = flight.itineraries[0].segments[0].departure.at;
-              const arrivalAirport = flight.itineraries[0].segments[0].arrival.iataCode;
+              const departureAirport =
+                flight.itineraries[0].segments[0].departure.iataCode;
+              const departureTime =
+                flight.itineraries[0].segments[0].departure.at;
+              const arrivalAirport =
+                flight.itineraries[0].segments[0].arrival.iataCode;
               const arrivalTime = flight.itineraries[0].segments[0].arrival.at;
 
               return (
-                <div key={index} className="flex flex-col items-center bg-white shadow-lg rounded-lg mb-6 p-6">
+                <div
+                  key={index}
+                  className="flex flex-col items-center bg-white shadow-lg rounded-lg mb-6 p-6"
+                >
                   <div className="w-full flex justify-between items-center">
-                    <div className="text-xl font-semibold">{departureAirport} to {arrivalAirport}</div>
-                    <div className="text-lg font-semibold">{currencySymbol}{flight.price.base} {flight.price.currency}</div>
+                    <div className="text-xl font-semibold">
+                      {departureAirport} to {arrivalAirport}
+                    </div>
+                    <div className="text-lg font-semibold">
+                      {currencySymbol}
+                      {flight.price.base} {flight.price.currency}
+                    </div>
                   </div>
                   <div className="w-full mt-2 flex justify-between">
-                    <div className="text-sm">Departure: {new Date(departureTime).toLocaleString()}</div>
-                    <div className="text-sm">Arrival: {new Date(arrivalTime).toLocaleString()}</div>
+                    <div className="text-sm">
+                      Departure: {new Date(departureTime).toLocaleString()}
+                    </div>
+                    <div className="text-sm">
+                      Arrival: {new Date(arrivalTime).toLocaleString()}
+                    </div>
                   </div>
-                  <button className="bg-black text-white p-2 rounded-full mt-4" 
-                  onClick={() => handleAddFlight(flight)}>
+                  <button
+                    className="bg-black text-white p-2 rounded-full mt-4"
+                    onClick={() => handleAddFlight(flight)}
+                  >
                     Add
                   </button>
                 </div>
