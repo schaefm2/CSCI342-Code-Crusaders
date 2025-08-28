@@ -14,7 +14,7 @@ You can add events, locations, and hotels to a planner.
 
 Hotels uses a google test search engine api for the hotel images,
 we only get 50 requests a day on it.
-Email me schaefm2@wwu.edu so I can replace with static images and keep functionality
+Email me ml.schaefer@outlook.com so I can replace with static images and keep functionality
 if the hotel images do not appear like in the video,
 
 ### Videos
