@@ -1,19 +1,26 @@
-# start the program
+# Code Crusaders Travel Planner
 
-from root: npm start
+## Description
+A travel planning final project made in our web development class.
+You can add events, locations, and hotels to a planner. 
 
-# note on HOTELS
+## Installation
+1. Clone the repository
+2. Navigate to the project directory:
+    ```bash
+    npm start
+    ```
+### note on HOTELS
 
 Hotels uses a google test search engine api for the hotel images,
 we only get 50 requests a day on it.
 Email me schaefm2@wwu.edu so I can replace with static images and keep functionality
 if the hotel images do not appear like in the video,
 
-# Videos
-
+### Videos
 See max_schaefer.mp4 for working hotel using the google api
 
-# Functionality notes
+### Functionality notes
 
 Some issues I couldnt solve with with adding flighs and hotels to a trip.
 Dont make trips of the same name...
